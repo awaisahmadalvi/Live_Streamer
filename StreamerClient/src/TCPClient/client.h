@@ -27,13 +27,13 @@ int srvrSock, numbytes;
 
 char tempBuff[MAXDATASIZE];
 
-void clientCommunication();
-
 int setAll();
-
-void startStreaming();
 int stopStreaming();
+void startStreaming();
 void stopLive();
+void startLive();
+
+void clientCommunication();
 
 int connect2Client(char *srvrIp);
 char * receiveData();

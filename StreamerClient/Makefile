@@ -1,6 +1,6 @@
 CC   = gcc
 SRC = $(wildcard src/gstreamer/*c src/TCPClient/*c)
-TARGET = bin/JpegStreamerClient.o
+TARGET = bin/StreamerClient.o
 
 LIBRARY += gobject-2.0
 LIBRARY += gstreamer-1.0

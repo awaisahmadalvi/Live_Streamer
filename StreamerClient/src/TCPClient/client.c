@@ -62,8 +62,10 @@ char * receiveData() {
 	return tempBuff;
 }
 
-int main() {
-	signal(SIGINT, intHandler);
+int main(int *argc,char *argv[]) {
+	gst_init(&argc, &argv);
+
+	//signal(SIGINT, intHandler);
 	char *val;
 	val = getJsonValueFromFile("TCPServerIp");
 	if (connect2Client(val) != 0)
