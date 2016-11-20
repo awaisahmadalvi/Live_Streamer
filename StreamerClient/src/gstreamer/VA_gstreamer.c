@@ -52,7 +52,7 @@ static gboolean bus_call(GstBus *bus, GstMessage *msg, gpointer data) {
 
 	case GST_MESSAGE_EOS:
 		g_print("*** End of stream ***\n");
-		g_main_loop_quit(loop);
+		stopStreaming();
 		break;
 
 	case GST_MESSAGE_ERROR: {
@@ -61,13 +61,9 @@ static gboolean bus_call(GstBus *bus, GstMessage *msg, gpointer data) {
 
 		gst_message_parse_error(msg, &error, &debug);
 		g_printerr("*** ERROR: %s ***\n", error->message);
-		if (strcmp("Could not open audio device for recording", error->message)
-				== 0) {
-
-		}
 		g_error_free(error);
 		g_free(debug);
-		g_main_loop_quit(loop);
+		stopStreaming();
 		break;
 	}
 
@@ -81,7 +77,7 @@ static gboolean bus_call(GstBus *bus, GstMessage *msg, gpointer data) {
 		g_print("*** INFO: %s ***\n", error->message);
 		g_error_free(error);
 
-		//g_main_loop_quit(loop);
+		//stopStreaming();
 		break;
 	}
 
@@ -243,7 +239,7 @@ void setProp() {
 	/* we set the live progress report frequency to 2 seconds */
 	g_object_set(G_OBJECT(qLive), "max-size-buffers", 0, NULL); //50, 200
 	g_object_set(G_OBJECT(qLive), "max-size-bytes", 0, NULL); //1000000000
-	g_object_set(G_OBJECT(qLive), "max-size-time", 3000000000, NULL); //3000000000
+	g_object_set(G_OBJECT(qLive), "max-size-time", 300000000, NULL); //3000000000
 
 	g_object_set(G_OBJECT(tee), "allow-not-linked", TRUE, NULL);
 
@@ -357,20 +353,6 @@ int pause() {
 	return r;
 }
 
-int stopStreaming() {
-
-	/* Out of the main loop, clean up nicely */
-	g_print("*** Mainloop stop: stopping Stream ***\n");
-	g_main_loop_quit(loop);
-	int r = gst_element_set_state(pipeline, GST_STATE_NULL);
-
-	g_print("*** Deleting pipeline ***\n");
-	gst_object_unref(GST_OBJECT(pipeline));
-	g_source_remove(bus_watch_id);
-	g_main_loop_unref(loop);
-	return r;
-}
-
 void stopLive() {
 
 	gst_element_set_state(bin, GST_STATE_NULL);
@@ -396,6 +378,21 @@ void *ThreadMain(void *threadArgs) {
 void startStreaming() {
 
 	g_thread_new("NEW", ThreadMain, NULL);
+}
+
+int stopStreaming() {
+
+	/* Out of the main loop, clean up nicely */
+	g_print("*** Mainloop stop: stopping Stream ***\n");
+	g_main_loop_quit(loop);
+	int r = gst_element_set_state(pipeline, GST_STATE_NULL);
+
+	g_print("*** Deleting pipeline ***\n");
+	gst_object_unref(GST_OBJECT(pipeline));
+	gst_object_unref(GST_OBJECT(bin));
+	g_source_remove(bus_watch_id);
+	g_main_loop_unref(loop);
+	return r;
 }
 
 int setAll() {
