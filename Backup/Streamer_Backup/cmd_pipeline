@@ -1,0 +1,161 @@
+export GST_DEBUG="rtmpsink:4"
+
+*************************** Microsoft ***************************
+
+gst-launch v4l2src device=/dev/video1 ! video/x-raw-yuv,format=\(fourcc\)YUY2,width=1280,height=720,framerate=10/1 ! xvimagesink
+
+gst-launch-1.0 v4l2src device=/dev/video1 ! image/jpeg,width=1280,height=720,framerate=30/1 ! jpegdec ! queue !  xvimagesink
+
+gst-launch-1.0 v4l2src device=/dev/video1 ! image/jpeg,width=1280,height=720,framerate=30/1 ! x264enc ! flvmux ! rtmpsink location=rtmp://103.226.217.136/live/myStream
+
+gst-launch-1.0 v4l2src device=/dev/video1 ! image/jpeg,width=1280,height=720,framerate=30/1 ! tee name=t t. ! queue ! avimux ! filesink location=temp.avi t. ! queue ! avimux ! filesink location=temp2.avi
+
+gst-launch-1.0 v4l2src device=/dev/video1 ! image/jpeg,width=800,height=600,framerate=30/1 ! flvmux ! filesink location=temp.avi
+
+
+gst-launch-1.0 alsasrc buffer-time=10 provide-clock=false slave-method=1 ! flvmux name=m ! progressreport ! fakesink v4l2src ! x264enc ! h264parse ! m.
+
+
+****************** Experiments ******************
+
+gst-launch-1.0 pulsesrc device="alsa_input.usb-HD_Camera_Manufacturer_HD_USB_Camera_SN0008-03-Camera.analog-mono" ! audiorate ! faac perfect-timestamp=1 hard-resync=1 bitrate=64000 ! progressreport name=audioprogress ! queue ! flvmux name=m ! progressreport name=local ! filesink location=mux.flv v4l2src device=/dev/video2 ! video/x-h264, framerate=5/1, width=640, height=480 ! h264parse ! progressreport name=videoprogress ! queue ! m.
+
+
+gst-launch-1.0 v4l2src device=/dev/video2 ! video/x-h264, framerate=10/1, width=640, height=480 ! progressreport ! filesink location=test.h264
+ffmpeg -re -framerate 10 -i temp.h264 -b:v 2000k -f flv -threads 20 rtmp://103.226.217.136/live/myStream
+gst-launch-1.0 filesrc location=test.h264 ! video/x-h264,framerate=10/1 ! flvmux ! progressreport ! rtmpsink location=rtmp://103.226.217.136/live/myStream
+
+
+gst-launch-1.0 v4l2src device=/dev/video2 ! video/x-h264, framerate=10/1, width=640, height=480 ! progressreport ! h264parse ! progressreport ! flvmux ! filesink location=mux.flv
+device="alsa_input.usb-HD_Camera_Manufacturer_HD_USB_Camera_SN0008-03-Camera.analog-mono" 
+gst-launch-1.0 alsasrc ! audioconvert ! progressreport ! flvmux ! filesink location=mux.flv
+
+gst-launch-1.0 pulsesrc device="alsa_input.usb-HD_Camera_Manufacturer_HD_USB_Camera_SN0008-03-Camera.analog-mono" ! audioconvert ! progressreport ! flvmux name=m ! filesink location=mux.flv v4l2src device=/dev/video2 ! video/x-h264, framerate=10/1, width=640, height=480 ! progressreport ! h264parse ! m.
+
+gst-launch-1.0 pulsesrc device="alsa_input.usb-HD_Camera_Manufacturer_HD_USB_Camera_SN0008-03-Camera.analog-mono" ! audioconvert ! lamemp3enc target=1 bitrate=64 cbr=true ! progressreport ! filesink location=audio.mp3
+
+gst-launch-1.0 alsasrc device="hw:CARD=Camera" ! audioconvert ! flvmux ! progressreport ! filesink location=audio.flv
+
+ 
+
+gst-launch-1.0 filesrc location=test.h264 ! h264parse ! progressreport ! flvmux name=m m. ! filesink location=mux.flv alsasrc device=hw:2 ! audioconvert ! m.
+gst-launch-1.0 filesrc location=test.h264 ! h264parse ! progressreport ! flvmux ! filesink location=mux.flv
+
+
+
+gst-launch-1.0 v4l2src device=/dev/video1 ! image/jpeg,width=800,height=600,framerate=30/1 ! matroskamux ! filesink location=temp.avi
+
+libwebm
+
+avmux_hls
+libav:  avenc_msmpeg4: libav MPEG-4 part 2 Microsoft variant version 3 encoder
+libav:  avenc_msmpeg4v2: libav MPEG-4 part 2 Microsoft variant version 2 encoder
+libav:  avenc_mpeg4: libav MPEG-4 part 2 encoder
+libav:  avenc_mpeg2video: libav MPEG-2 video encoder
+libav:  avenc_mpeg1video: libav MPEG-1 video encoder
+libav:  avenc_mjpeg: libav MJPEG (Motion JPEG) encoder
+libav:  avenc_ljpeg: libav Lossless JPEG encoder
+libav:  avenc_jpegls: libav JPEG-LS encoder
+
+
+gst-launch videotestsrc ! videorate ! video/x-raw-yuv,framerate=5/1 ! queue ! theoraenc ! queue ! mux. pulsesrc device="alsa_input.usb-HD_Camera_Manufacturer_HD_USB_Camera_SN0008-03.analog-mono" ! audio/x-raw-int,rate=48000,channels=1,depth=16 ! queue ! audioconvert ! queue ! vorbisenc ! queue ! mux. oggmux name=mux ! filesink location=stream.ogv
+
+*************************** USB CAM ***************************
+gst-launch-1.0 v4l2src device=/dev/video0 ! image/jpeg,width=800,height=600,framerate=10/1 ! avimux ! filesink location=temp.avi
+gst-launch-1.0 v4l2src device=/dev/video0 ! image/jpeg,width=800,height=600,framerate=10/1 ! h264parse ! flvmux ! filesink location=temp.avi
+
+gst-launch-1.0 v4l2src device=/dev/video2 ! video/x-h264, framerate=10/1, width=640, height=480 ! filesink location=temp.h264
+
+gst-launch-1.0 v4l2src device=/dev/video2 ! video/x-h264, framerate=10/1, width=640, height=480 ! tee name=t t. ! queue ! filesink location=temp.h264 ! t. ! queue !  h264parse ! flvmux ! progressreport ! rtmpsink location=rtmp://103.226.217.136/live/myStream
+
+gst-launch-1.0 v4l2src device=/dev/video1 ! video/x-h264, framerate=10/1, width=640, height=480 ! queue2 ! h264parse ! flvmux ! progressreport ! tee name=t pull-mode=1 t. ! queue2 ! progressreport ! filesink location=temp.flv t. ! queue2 ! progressreport ! rtmpsink location=rtmp://103.226.217.136:1935/live/myStream async=true
+
+gst-launch-1.0 filesrc location=temp.h264 ! video/x-h264, framerate=10/1, width=640, height=480 ! h264parse ! flvmux ! progressreport ! filesink location=temp.flv
+gst-launch-1.0 filesrc location=test.h264 ! video/x-h264, framerate=10/1, width=640, height=480, stream-format=(string)byte-stream ! h264parse ! mpegtsmux ! progressreport ! filesink location=mux.flv
+
+video/x-h264, stream-format=(string)byte-stream
+
+8992 0404 0115 2217 55
+8992 0404 0115 2217 56
+
+ffmpeg -i temp.h264 -c:v libx264 -preset ultrafast -b:v 1500k -f flv -threads 20 rtmp://103.226.217.136/live/myStream
+
+gst-launch-1.0 v4l2src device=/dev/video1 ! video/x-h264, framerate=30/1, width=640, height=480 ! flvmux ! tee name=t t.! queue ! progressreport ! filesink location=test.flv t. ! queue ! progressreport ! rtmpsink location=rtmp://103.226.217.136:1935/live/myStream
+
+gst-launch-1.0 v4l2src device=/dev/video1 ! video/x-h264,widtgst-launch-1.0 filesrc location=test.h264 ! video/x-h264,framerate=10/1 ! flvmux ! progressreport ! rtmpsink location=rtmp://103.226.217.136/live/myStreamh=1280,height=720,framerate=30/1 ! h264parse ! flvmux ! progressreport ! rtmpsink location=rtmp://103.226.217.136/live/myStream
+
+
+gst-launch-1.0 v4l2src device=/dev/video0 ! video/x-h264,width=640,height=480,framerate=10/1 ! progressreport ! flvmux streamable=true ! queue ! progressreport ! filesink location=a.flv
+
+gst-launch-1.0 v4l2src device=/dev/video1 ! videoconvert ! video/x-raw,width=640,height=480,framerate=30/1 ! x264enc ! flvmux ! progressreport ! rtmpsink location=rtmp://103.226.217.136:1935/live/myStream async=true
+
+gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! video/x-raw,width=640,height=480,framerate=30/1 ! x264enc ! flvmux ! tee name=t \
+t. ! queue ! filesink location=test.mp4 \
+t. ! queue ! rtmpsink location=rtmp://103.226.217.136:1935/live/myStream
+
+
+gst-launch-0.10 v4l2src ! 'video/x-raw-yuv,width=640,height=480,framerate=30/1' ! timeoverlay halignment=right valignment=bottom shaded-background=true ! clockoverlay halignment=left valignment=bottom text="M/D/Y:" shaded-background=true time-format="%m/%d/%Y %H:%M:%S" ! tee name=t_vid ! queue ! xvimagesink sync=false t_vid. ! queue ! videorate ! 'video/x-raw-yuv,framerate=30/1' ! theoraenc ! queue ! oggmux ! filesink location=testogg.ogv
+
+gst-launch-1.0 v4l2src ! tee name=t t. ! queue ! videoconvert ! video/x-raw,width=640,height=480,framerate=30/1 ! x264enc ! avimux ! filesink location=test.avi t. ! queue ! videoconvert ! video/x-raw,width=640,height=480,framerate=30/1 ! x264enc ! flvmux ! rtmpsink location=rtmp://103.226.217.136:1935/live/myStream
+
+gst-launch-1.0 v4l2src ! videoconvert ! video/x-raw,width=640,height=480,framerate=30/1 ! x264enc ! tee name=t t. ! queue ! avimux ! filesink location=test.avi t. ! queue ! flvmux ! rtmpsink location=rtmp://103.226.217.136:1935/live/myStream
+
+gst-launch-1.0 v4l2src device=/dev/video1 ! video/x-h264, framerate=30/1, width=640, height=480 ! mpegtsmux ! filesink location=test.mp4
+
+gst-launch-1.0 v4l2src device=/dev/video1 ! video/x-raw,width=640,height=480,framerate=30/1 ! x264enc ! h264parse ! flvmux ! progressreport ! rtmpsink location=rtmp://103.226.217.136/live/myStream sync=false
+
+gst-launch-1.0 filesrc location=20160211_112909.avi ! decodebin ! flvmux ! queue ! rtmpsink location=rtmp://103.226.217.136:1935/live/myStream
+
+gst-launch-1.0 filesrc location=20160211_121444.avi ! decodebin name=demux ! queue ! videoconvert ! x264enc pass=pass1 threads=0 bitrate=900 tune=zerolatency ! flvmux name=mux ! rtmpsink location='rtmp://103.226.217.136:1935/live/myStream' demux.
+
+gst-launch filesrc location=HP.avi ! decodebin name=demux ! queue ! videorate ! videoscale method=0 ! video/x-raw-yuv,width=852,height=480,framerate=\(fraction\)24/1 ! ffmpegcolorspace ! x264enc pass=pass1 threads=0 bitrate=900 tune=zerolatency ! flvmux name=mux ! rtmpsink location='rtmp://103.226.217.136:1935/live/myStream' demux. ! queue ! progressreport ! audioconvert ! audiorate ! audioresample ! *faac bitrate=96000 ! audio/mpeg,mpegversion=4,stream-format=raw *! mux.
+
+gst-launch-1.0 v4l2src ! video/x-raw,format=YUY2,width=320,height=240 ! videoconvert ! x264enc ! filesink location=a.flv
+
+gst-launch-1.0 v4l2src device=/dev/video0 ! video/x-h264,width=1280,height=720,framerate=10/1 ! h264parse ! flvmux ! rtmpsink location=rtmp://103.226.217.136/live/myStream
+
+gst-launch-1.0 v4l2src device=/dev/video2 ! video/x-h264, framerate=30/1, width=640, height=480  ! mux. alsasrc device="hw:2" ! audioconvert ! lamemp3enc target=1 bitrate=64 cbr=true ! mux. mpegtsmux name=mux ! filesink location=test.mp4 sync=true
+
+gst-launch-1.0 v4l2src device=/dev/video1 ! video/x-h264,width=1280,height=720,framerate=10/1 ! h264parse ! flvmux ! rtmpsink location=rtmp://103.226.217.136:1935/live/myStream
+
+gst-launch-1.0 v4l2src device=/dev/video0 ! video/x-h264, framerate=30/1, width=640, height=480 ! mpegtsmux ! filesink location=test.mp4
+
+gst-launch -e v4l2src ! video/x-raw-yuv, framerate=7/1, width=1280, height=720 ! x264enc ! mpegtsmux ! filesink location=test.mp4
+
+gst-launch -e v4l2src device=/dev/video1 ! video/x-raw-yuv, framerate=10/1, width=1280, height=720 ! x264enc ! mpegtsmux ! filesink location=test.mp4
+
+gst-launch -e pulsesrc ! audioconvert ! lamemp3enc target=1 bitrate=64 cbr=true ! filesink location=audio.mp3
+
+gst-launch-1.0 pulsesrc device="alsa_input.usb-HD_Camera_Manufacturer_HD_USB_Camera_SN0008-03-Camera.analog-mono" ! audioconvert ! lamemp3enc target=1 bitrate=64 cbr=true ! progressreport ! filesink location=audio.mp3
+
+
+pactl list | grep -A2 'Source #' | grep 'Name: ' | cut -d" " -f2
+
+gst-launch -v v4l2src device=/dev/video1 ! video/x-raw-yuv, framerate=10/1, width=1280, height=720 ! clockoverlay halign=left valign=bottomshaded-background=true time-format="%d/%m/%y - %H:%M:%S" ! xvimagesink
+
+time-format="%D"
+
+gst-launch videotestsrc ! clockoverlay halign=right valign=bottom shaded-background=true time-format="%Y.%m.%D" ! ffmpegcolorspace ! ximagesink
+
+gst-launch-1.0 -e v4l2src device=/dev/video1 ! video/x-h264, width=1280, height=720, framerate=30/1 ! avdec_h264 ! xvimagesink sync=true
+
+
+Most devices send an EndOfStream signal if the input signal quality drops too low, causing GStreamer to finish capturing. To prevent the device from sending EOS, set num-buffers=-1 on the v4l2src element.
+
+netstat -anp 
+
+********************************************************
+
+gst-launch-1.0 v4l2src ! 'video/x-raw,width=1280,height=720,framerate=10/1' ! imxipuvideotransform ! imxeglvivsink sync=false
+
+gst-launch-0.10 v4l2src device="/dev/video1" ! video/x-raw-yuv,width=1280,height=720  ! ffmpegcolorspace  ! xvimagesink
+
+gst-launch-0.10 alsasrc device="hw:1,0"  ! audio/x-raw-int,rate=16000,channels=1,depth=16  ! audioconvert ! lamemp3enc ! filesink location=test.mp3
+
+gst-launch-0.10  v4l2src queue-size=16 !  stamp sync-margin=1 sync-interval=1  ! video/x-raw-yuv,width=800,height=600,framerate=15/1  ! queue2 max-size-buffers=1000 max-size-bytes=0 max-size-time=0  ! ffmpegcolorspace  ! theoraenc quality=60 name=venc  alsasrc device="hw:1,0"  !  audio/x-raw-int,rate=16000,channels=1,depth=16  !  audioconvert ! queue2 max-size-buffers=1000 max-size-bytes=0 max-size-time=0  !  vorbisenc quality=0.9 name=aenc oggmux name=mux ! filesink location
+
+You have to install the *-dev packages in order to compile something which uses/links against some library. I guess libgstreamer1.0-dev, libgstreamer-plugins-base1.0-dev,.. is missing. (Install it with sudo apt-get libgstreamer1.0-dev, ...)
+
+
+apt-get install debhelper dh-autoreconf autotools-dev doxygen graphviz libasound2-dev libtool libjpeg-dev libqt4-dev libqt4-opengl-dev libudev-dev libx11-dev pkg-config udev make gcc git
+

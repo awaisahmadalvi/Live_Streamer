@@ -1,0 +1,1 @@
+gst-launch-1.0 -v v4l2src device=/dev/video1 ! h264parse ! mux. alsasrc buffer-time=99999999999999 device=hw:CARD=Camera,DEV=0 do-timestamp=false ! audio/x-raw,width=16,depth=16,rate=44100,channels=1 ! queue leaky=1 ! mux. flvmux name=mux ! progressreport ! filesink location=test.flv

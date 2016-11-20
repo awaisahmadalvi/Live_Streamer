@@ -1,0 +1,16 @@
+Generate from a gstreamer application
+Add this to your app after all the elements are created and linked.
+
+	GST_DEBUG_BIN_TO_DOT_FILE(pipeline, GST_DEBUG_GRAPH_SHOW_ALL, "pipeline")
+
+and run the app like:
+
+	GST_DEBUG_DUMP_DOT_DIR=. ./application
+
+Where you ran the application, you can find a file named pipeline.dot, move it to your computer and apply follows:
+
+	dot -Tpng pipeline.dot > pipeline.png
+
+Open the pipeline.png
+
+	eog pipeline.png

@@ -1,0 +1,1 @@
+{"v4l2caps":"video\/x-h264,framerate=10\/1,width=640,height=480","audiocaps":"audio\/x-raw,rate=22050,channels=1","v4l2device":"\/dev\/video2","audiodevice":"hw:CARD=Camera","location":"\/root\/videos\/","serverIp":"0.0.0.0","serverApp":"live","streamId":"myStream","action":"off"}

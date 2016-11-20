@@ -1,0 +1,4 @@
+#! /bin/bash
+export GST_DEBUG_DUMP_DOT_DIR=/root/Desktop/example/Backup/Streamer_Backup/pipeline_png/images
+echo $GST_DEBUG_DUMP_DOT_DIR
+mkdir -p $GST_DEBUG_DUMP_DOT_DIR
