@@ -33,7 +33,7 @@ char * getJsonValueFromFile(char * jKey) {
 	return value;
 }
 
-char * getJsonValueFromObj(json_object * tempJson, char * jKey) {
+char * getJsonValueFromObj(char * jKey, json_object * tempJson) {
 	char *value;
 	json_object * jValue;
 	json_object_object_get_ex(tempJson, jKey, &jValue);

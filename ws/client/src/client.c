@@ -48,6 +48,7 @@ static int websocket_write_back(struct lws *wsi_in, char *str, int str_size_in) 
 			sizeof(char)
 					* (LWS_SEND_BUFFER_PRE_PADDING + len
 							+ LWS_SEND_BUFFER_POST_PADDING));
+
 	//* setup the buffer*/
 	memcpy(out + LWS_SEND_BUFFER_PRE_PADDING, str, len);
 	//* write out*/
@@ -93,7 +94,7 @@ static int ws_service_callback(struct lws *wsi,
 	case LWS_CALLBACK_CLIENT_WRITEABLE:
 		printf(
 				KYEL"[Main Service] On writeable is called. send byebye message\n"RESET);
-		websocket_write_back(wsi, "Byebye! See you later", -1);
+		websocket_write_back(wsi, "{\"streamId\":\"myStream\",\"action\":\"live\"}", -1);
 		writeable_flag = 1;
 		break;
 
@@ -116,15 +117,15 @@ static void *pthread_routine(void *tool_in) {
 	//*Send greeting to server*/
 	printf(
 			KBRN"[pthread_routine] Server is ready. send a greeting message to server.\n"RESET);
-	websocket_write_back(tool->wsi, "Good day", -1);
+	websocket_write_back(tool->wsi, "{\"streamId\":\"myStream\",\"action\":\"status\"}", -1);
 
-	printf(KBRN"[pthread_routine] sleep 2 seconds then call onWritable\n"RESET);
+	printf(KBRN"[pthread_routine] sleep 1 seconds then call onWritable\n"RESET);
 	sleep(1);
 	printf(KBRN"------------------------------------------------------\n"RESET);
-	sleep(1);
+	//sleep(4);
 	//printf(KBRN"[pthread_routine] sleep 2 seconds then call onWritable\n"RESET);
 
-	//*involked wriable*/
+	//*invoked writable*/
 	printf(KBRN"[pthread_routine] call on writable.\n"RESET);
 	lws_callback_on_writable(tool->wsi);
 
@@ -169,8 +170,8 @@ int main(void) {
 		return -1;
 	}
 
-	wsi = lws_client_connect(context, "localhost", 5000, 0, "/",
-			"localhost:5000", NULL, protocol.name, -1);
+	wsi = lws_client_connect(context, "localhost", 4446, 0, "/",
+			"localhost:4446", NULL, protocol.name, -1);
 	if (wsi == NULL) {
 		printf(KRED"[Main] wsi create error.\n"RESET);
 		return -1;

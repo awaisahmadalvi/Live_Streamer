@@ -1,8 +1,8 @@
 
-all: example-server
+all: example-PlayerServer
 
-example-server: src/server.c
-	@gcc src/server.c -o bin/server -lwebsockets
+example-PlayerServer: src/PlayerServer.c
+	@gcc src/PlayerServer.c -o bin/PlayerServer -lwebsockets
 
 clean:
-	@rm -rf bin/server
+	@rm -rf bin/PlayerServer

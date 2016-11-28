@@ -33,19 +33,19 @@ void startStreaming();
 void stopLive();
 void startLive();
 
-void clientCommunication();
+void clientComm();
 
 int connect2Client(char *srvrIp);
 char * receiveData();
 void sendData(char buf[MAXDATASIZE]);
 
-char * getJsonValueFromObj(json_object * tempJson, char * jKey);
+char * getJsonValueFromObj(char * jKey, json_object * tempJson);
 char * getJsonValueFromFile(char * jKey);
 void setJsonValue(char * jKey, char *value);
 void JsonToFile(json_object * jobj);
 json_object * JsonFromFile();
 
-void receive();
+int receive();
 void SIGReady();
 void SIGLive();
 void SIGLocal();

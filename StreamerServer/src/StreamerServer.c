@@ -1,6 +1,4 @@
-#include <PlayerServer.h>
-
-int clntSock;
+#include <Server.h>
 
 void *ThreadMain(void *threadArgs) {
 	int clntSock; /* Socket descriptor for client connection */
@@ -11,7 +9,7 @@ void *ThreadMain(void *threadArgs) {
 	return (NULL);
 }
 
-void startPlayerSrvr() {
+void startStrmSrvr() {
 	/* listen on sock_fd, new connection on clntSock */
 	int sockfd, clntSock;
 	/* my address information */
@@ -40,12 +38,12 @@ void startPlayerSrvr() {
 	/* host byte order */
 	my_addr.sin_family = AF_INET;
 	/* short, network byte order */
-	my_addr.sin_port = htons(MYPORT);
+	my_addr.sin_port = htons(STRMPORT);
 	/* automatically fill with my IP */
 	my_addr.sin_addr.s_addr = INADDR_ANY;
 
 	printf("Server-Using %s and port %d...\n", inet_ntoa(my_addr.sin_addr),
-			MYPORT);
+			STRMPORT);
 
 	/* zero the rest of the struct */
 	memset(&(my_addr.sin_zero), '\0', 8);
@@ -87,25 +85,23 @@ void startPlayerSrvr() {
 	}
 }
 
-void sendData(char tempBuff[MAXDATASIZE]) {
-	printf("Server-send(): %s\n", tempBuff);
+void sendData(char tempBufS[MAXDATASIZE]) {
+	printf("Server-send(): %s\n", tempBufS);
 
-	if (send(clntSock, tempBuff, MAXDATASIZE - 1, 0) == -1)
+	if (send(clntSock, tempBufS, MAXDATASIZE - 1, 0) == -1)
 		perror("Server-send() error lol!");
 	else
 		printf("Server-send() is OK...\n");
 }
 
 char * receiveData() {
-	int numbytes;
-	memset(&tempBuff[0], 0, MAXDATASIZE);
-	if ((numbytes = recv(clntSock, tempBuff, MAXDATASIZE - 1, 0)) == -1) {
+	memset(&tempBufS[0], 0, MAXDATASIZE);
+	if ((numbytes = recv(clntSock, tempBufS, MAXDATASIZE - 1, 0)) == -1) {
 		perror("recv()");
 		exit(1);
 	} else
 		printf("Server-recv() is OK...\n");
 
-	tempBuff[numbytes] = '\0';
-	return tempBuff;
+	tempBufS[numbytes] = '\0';
+	return tempBufS;
 }
-

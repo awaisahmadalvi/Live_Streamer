@@ -40,6 +40,10 @@ int websocket_write_back(struct lws *wsi_in, char *str, int str_size_in) {
 			sizeof(char)
 					* (LWS_SEND_BUFFER_PRE_PADDING + len
 							+ LWS_SEND_BUFFER_POST_PADDING));
+
+	/* reply to client */
+
+
 	//* setup the buffer*/
 	memcpy(out + LWS_SEND_BUFFER_PRE_PADDING, str, len);
 	//* write out*/
@@ -64,7 +68,7 @@ static int ws_service_callback(struct lws *wsi,
 
 		//* If receive a data from client*/
 	case LWS_CALLBACK_RECEIVE:
-		printf(KCYN_L"[Main Service] Server recvived:%s\n"RESET, (char *) in);
+		printf(KCYN_L"[Main Service] Server received:%s\n"RESET, (char *) in);
 
 		//* echo back to client*/
 		websocket_write_back(wsi, (char *) in, -1);

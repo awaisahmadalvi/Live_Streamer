@@ -32,6 +32,28 @@ void intHandler(int dummy) {
 	exit(0);
 }
 
+static GstPadProbeReturn block_probe_cb(GstPad * pad, GstPadProbeInfo * info,
+		gpointer user_data) {
+	GstBuffer *buf = info->data;
+	gboolean is_keyframe;
+
+	is_keyframe = !GST_BUFFER_FLAG_IS_SET (buf, GST_BUFFER_FLAG_DELTA_UNIT);
+	g_print("Buffer with ts %" GST_TIME_FORMAT " (keyframe=%d)\n",
+			GST_TIME_ARGS (GST_BUFFER_PTS (buf)), is_keyframe);
+
+	if (is_keyframe) {
+		g_print("Letting buffer through and removing drop probe\n");
+		return GST_PAD_PROBE_REMOVE;
+	} else {
+		g_print("Dropping buffer, wait for a keyframe.\n");
+		return GST_PAD_PROBE_DROP;
+	}
+	return GST_PAD_PROBE_OK;
+}
+//pad = gst_element_get_static_pad(qLive, "sink");
+	//gst_pad_add_probe(pad, GST_PAD_PROBE_TYPE_EVENT_FLUSH, block_probe_cb, NULL,
+	//	NULL);
+	
 void getCurTime() {
 	time_t rawtime;
 	struct tm * timeinfo;

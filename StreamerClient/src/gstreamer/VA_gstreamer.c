@@ -54,6 +54,7 @@ void intHandler(int dummy) {
 
 	g_print("*** SIGINT Caught ***\n");
 	stopStreaming();
+	SIGLocal();
 	exit(0);
 }
 
@@ -65,10 +66,21 @@ void getCurTime() {
 	strftime(timeStr, 16, "%d%m%y_%H%M%S", timeinfo);
 }
 
-/*
- static void queue_overrun(GstElement *queue, gpointer data) {
- g_print("*** Overrun Caught ***\n");
- }*/
+static void queue_overrun(GstElement *queue, gpointer data) {
+	g_print("*** Overrun Caught ***\n");
+	guint mBuf, mByt, mTim, cBuf, cByt, cTim;
+
+	g_object_get(G_OBJECT (queue), "max-size-time", &mBuf, NULL);
+	g_object_get(G_OBJECT (queue), "max-size-bytes", &mByt, NULL);
+	g_object_get(G_OBJECT (queue), "max-size-time", &mTim, NULL);
+	g_object_get(G_OBJECT (queue), "current-level-time", &cBuf, NULL);
+	g_object_get(G_OBJECT (queue), "current-level-bytes", &cByt, NULL);
+	g_object_get(G_OBJECT (queue), "current-level-time", &cTim, NULL);
+
+	g_print("Status: %u, %u, %u, %u, %u, %u\n", mBuf, cBuf, mByt, cByt, mTim,
+			cTim);
+
+}
 
 static gboolean bus_call(GstBus *bus, GstMessage *msg, gpointer data) {
 
@@ -264,7 +276,7 @@ int initLive() {
 			(gchar *) getJsonValueFromFile("serverApp"),
 			(gchar *) getJsonValueFromFile("streamId"));
 	g_object_set(G_OBJECT(sinkLive), "location", serverIp, NULL);
-	g_object_set(G_OBJECT(sinkLive), "max-lateness", 1000000000, NULL);
+	g_object_set(G_OBJECT(sinkLive), "max-lateness", 100, NULL); //1000000000
 	/* we set the output to PAUSE async to filesink */
 	g_object_set(G_OBJECT(sinkLive), "async", TRUE, NULL);
 	/* we set the live progress report frequency to 2 seconds */
@@ -273,8 +285,8 @@ int initLive() {
 	g_object_set(G_OBJECT(qLive), "leaky", 2, NULL);
 	/* we set the live progress report frequency to 2 seconds */
 	g_object_set(G_OBJECT(qLive), "max-size-buffers", 0, NULL); //50, 200
-	g_object_set(G_OBJECT(qLive), "max-size-bytes", 0, NULL); //1000000000
-	g_object_set(G_OBJECT(qLive), "max-size-time", 300000000, NULL); //3000000000
+	g_object_set(G_OBJECT(qLive), "max-size-bytes", 20000000, NULL); //1000000000
+	g_object_set(G_OBJECT(qLive), "max-size-time", 10000000, NULL); //3000000000
 	/* Obtaining request pads for the tee elements*/
 	GstPadTemplate *tee_src_pad_template;
 	if (!(tee_src_pad_template = gst_element_class_get_pad_template(
@@ -301,11 +313,12 @@ int initLive() {
 	/* add ghostpad */
 	pad = gst_element_get_static_pad(liveProgres, "sink");
 	gst_element_add_pad(bin, gst_ghost_pad_new("sink", pad));
+	//g_signal_connect(qLive, "overrun", G_CALLBACK(queue_overrun), NULL);
 	gst_object_unref(GST_OBJECT(pad));
 	gst_element_link_many(qLive, bin, NULL);
+	gst_object_unref(bus);
 	return 0;
 }
-
 int initialize() {
 
 	/* Initialisation */
@@ -336,10 +349,10 @@ int initialize() {
 	gst_bin_add_many(GST_BIN(pipeline), flvmux, muxProgres, tee, NULL);
 	gst_element_link_many(flvmux, muxProgres, tee, NULL);
 
-	//initCamera();
+	initCamera();
 	initAudio();
 	initLocal();
-	//initLive();
+	initLive();
 	return 0;
 }
 

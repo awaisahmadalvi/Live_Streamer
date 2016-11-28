@@ -4,7 +4,7 @@
  *  Created on: Oct 17, 2016
  *      Author: root
  */
-#include <server.h>
+#include <Server.h>
 
 int exists(const char *fname) {
 	FILE *file;
@@ -43,7 +43,7 @@ char * getJsonValueFromFile(char * jKey, char *file) {
 	return json_object_get_string(jValue);
 }
 
-char * getJsonValueFromObj(json_object * tempJson, char * jKey) {
+char * getJsonValueFromObj(char * jKey, json_object * tempJson) {
 	char *value;
 	json_object * jValue;
 	json_object_object_get_ex(tempJson, jKey, &jValue);

@@ -22,22 +22,47 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <time.h>
-/* the port users will be connecting to */
-#define MYPORT 1112
+/* the port streamer will be connecting to */
+#define STRMPORT 4445
+/* the port player will be connecting to */
+#define PLYRPORT 4446
+
 /* how many pending connections queue will hold */
 #define BACKLOG 10
 // max number of bytes we can get at once
 #define MAXDATASIZE 255
 
-void startPlayerSrvr();
-void sendData(char tempBuff[MAXDATASIZE]);
-char * receiveData();
+void HandleTCPClient(int clntSock);
 void HandleTCPClient(int clntSockAddr);
+void sendData(char tempBuff[MAXDATASIZE]);
+void startStrmSrvr();
 
-char tempBuff[MAXDATASIZE];
+char * receiveData();
+void * ThreadMain(void *threadArgs);
+char * getJsonValueFromObj(char * jKey, json_object * tempJson);
+char * getJsonValueFromFile(char * jKey, char *file);
+void setJsonValue(char * jKey, char *value, char *file);
+void JsonToFile(json_object * jobj, char *file);
+json_object * JsonFromFile(char *file);
+
+void receive();
+void SIGLive();
+void SIGLocal();
+void SIGOff();
+void msgParse(char tempStr[MAXDATASIZE]);
+
+int clntSock, numbytes;
+char tempBufS[MAXDATASIZE];
+char tempBufP[MAXDATASIZE];
 
 struct ThreadArgs { /* Structure of arguments to pass to client thread */
 	int clntSock; /* socket descriptor for client */
 };
+
+/*
+ * Player Server
+ */
+
+int startPlayerServer();
 
 #endif /* SEVER_H_ */

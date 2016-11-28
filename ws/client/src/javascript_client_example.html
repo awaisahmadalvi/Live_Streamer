@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>WebSocket Test</title>
+</head>
+<body>
+
+
+<p>Enter Stream Name&nbsp;<input maxlength="16" name="strmName" size="16" type="text" /></p>
+
+<p><input name="connect" type="button" value="Connect" onclick="webSock()" /></p>
+
+<p><input name="golive" type="button" value="Go Live" onclick="SIGLive()" /></p>
+
+<p id="demo"></p>
+
+<script>
+function webSock() {
+    document.getElementById("demo").innerHTML = "Paragraph changed.";
+  	ws=new WebSocket("ws://localhost:4446");
+	
+  	ws.onerror=function(evt){
+  		document.getElementById("demo").innerHTML = 'ERROR opening WebSocket.';
+  	};
+  	ws.onmessage=function(evt){
+		document.getElementById("demo").innerHTML = 'Received: '+evt.data;
+	};
+  	ws.onopen=function(evt){
+    	document.getElementById("demo").innerHTML = 'Connection Successful.';
+		ws.send("{\"streamId\":\"myStream\",\"action\":\"status\"}");
+  	};
+}
+function SIGLive() {
+	ws.send("{\"streamId\":\"myStream\",\"action\":\"live\"}");
+}
+window.onclose=function(){
+  ws.close();
+}
+</script>
+</body>
+</html>

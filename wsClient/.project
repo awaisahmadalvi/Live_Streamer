@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>TCPServer</name>
+	<name>wsClient</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -76,10 +76,4 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
-	<variableList>
-		<variable>
-			<name>GST</name>
-			<value>file:/usr/include/gstreamer-1.0</value>
-		</variable>
-	</variableList>
 </projectDescription>

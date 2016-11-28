@@ -1,11 +1,13 @@
 
 CC=gcc
-CFLAGS=`pkg-config --cflags --libs json-c json` '-lpthread' -Isrc/  
+CFLAGS=`pkg-config --cflags --libs json-c json` -Isrc/  
+SRC = $(wildcard src/*c)
+LIB = -lwebsockets -lpthread
 
 all: clean build
 
 build:
-	@$(CC) -o bin/StreamerServer.o src/server.c src/srvrComm.c src/srvrJson.c $(CFLAGS)
+	@$(CC) -o bin/StreamerServer.o  $(SRC) $(CFLAGS) $(LIB)
 	@echo '*** Build Completed ***'
 
 server:

@@ -5,20 +5,31 @@
  *      Author: root
  */
 #include <client.h>
+#define ACK 1
 
-void clientCommunication() {
+void clientComm() {
 
-	SIGReady();
-	while (strcmp(getJsonValueFromFile("status"), "live") != 0)
-		receive();
-	while(TRUE);
+	SIGStatus();
+	while (receive() != ACK) {
+	}
 }
 
 char * getStreamId() {
 	return getJsonValueFromFile("streamId");
 }
 
+void SIGStatus() {
+	memset(&tempBuff[0], 0, MAXDATASIZE);
+	snprintf(tempBuff, MAXDATASIZE,
+			"{ \"streamId\" : \"%s\",\"status\" : \"%s\"}", getStreamId(),
+			getJsonValueFromFile("status"));
+
+	tempBuff[MAXDATASIZE] = '\0';
+	sendData(tempBuff);
+}
+
 void SIGReady() {
+	memset(&tempBuff[0], 0, MAXDATASIZE);
 	snprintf(tempBuff, MAXDATASIZE,
 			"{ \"streamId\" : \"%s\",\"status\" : \"ready\"}", getStreamId());
 
@@ -28,6 +39,7 @@ void SIGReady() {
 }
 
 void SIGOff() {
+	memset(&tempBuff[0], 0, MAXDATASIZE);
 	snprintf(tempBuff, MAXDATASIZE,
 			"{ \"streamId\" : \"%s\",\"status\" : \"off\"}", getStreamId());
 	tempBuff[MAXDATASIZE] = '\0';
@@ -36,6 +48,7 @@ void SIGOff() {
 }
 
 void SIGLive() {
+	memset(&tempBuff[0], 0, MAXDATASIZE);
 	snprintf(tempBuff, MAXDATASIZE,
 			"{ \"streamId\" : \"%s\",\"status\" : \"live\"}", getStreamId());
 	tempBuff[MAXDATASIZE] = '\0';
@@ -44,6 +57,7 @@ void SIGLive() {
 }
 
 void SIGLocal() {
+	memset(&tempBuff[0], 0, MAXDATASIZE);
 	snprintf(tempBuff, MAXDATASIZE,
 			"{ \"streamId\" : \"%s\",\"status\" : \"local\"}", getStreamId());
 	tempBuff[MAXDATASIZE] = '\0';
@@ -54,24 +68,23 @@ void SIGLocal() {
 void msgParse(char tempStr[MAXDATASIZE]) {
 	json_object * jobj = json_tokener_parse(tempStr);
 	if (strcmp(getJsonValueFromFile("streamId"),
-			getJsonValueFromObj(jobj, "streamId")) == 0) {
-		char *act = getJsonValueFromObj(jobj, "action");
-		setJsonValue("action", act);
-		if (strcmp(act, "live") == 0) {
+			getJsonValueFromObj("streamId", jobj)) == 0) {
+		char *actRecv = getJsonValueFromObj("action", jobj);
+		setJsonValue("action", actRecv);
+		if (strcmp(actRecv, "live") == 0) {
 			/* start live stream */
 			if (strcmp(getJsonValueFromFile("status"), "local") == 0) {
 				startLive();
-				SIGLive();
 			} else if (strcmp(getJsonValueFromFile("status"), "ready") == 0) {
 				setAll();
 				startStreaming();
-				printf("Device is Live now.\n");
-				SIGLive();
 			}
-		} else if (strcmp(act, "local") == 0) {
+			printf("Device is Live now.\n");
+			SIGLive();
+		} else if (strcmp(actRecv, "local") == 0) {
 			if (strcmp(getJsonValueFromFile("status"), "live") == 0)
 				stopLive();
-			if ((strcmp(getJsonValueFromFile("status"), "off") == 0)
+			else if ((strcmp(getJsonValueFromFile("status"), "off") == 0)
 					|| (strcmp(getJsonValueFromFile("status"), "ready") == 0)) {
 				setAll();
 				stopLive();
@@ -79,7 +92,7 @@ void msgParse(char tempStr[MAXDATASIZE]) {
 			}
 			printf("Device is Local now.\n");
 			SIGLocal();
-		} else if (strcmp(act, "off") == 0) {
+		} else if (strcmp(actRecv, "off") == 0) {
 			/* stop all stream */
 			printf("Device is Off now.\n");
 			stopStreaming();
@@ -88,11 +101,13 @@ void msgParse(char tempStr[MAXDATASIZE]) {
 	}
 }
 
-void receive() {
+int receive() {
 	printf("Client-Receiving ******************** \n");
 
 	char *str = receiveData();
 	printf("Client-Received: %s\n", str);
+	if (strcmp(str, "ACK") == 0)
+		return ACK;
 	msgParse(str);
+	return 0;
 }
-
