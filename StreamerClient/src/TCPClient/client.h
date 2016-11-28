@@ -46,12 +46,8 @@ void JsonToFile(json_object * jobj);
 json_object * JsonFromFile();
 
 int receive();
-void SIGReady();
-void SIGLive();
-void SIGLocal();
-void SIGOff();
+void SIGStatus();
 void msgParse(char tempStr[MAXDATASIZE]);
-char * getStreamId();
 
 void intHandler(int dummy);
 

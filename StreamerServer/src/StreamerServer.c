@@ -1,14 +1,5 @@
 #include <Server.h>
 
-void *ThreadMain(void *threadArgs) {
-	int clntSock; /* Socket descriptor for client connection */
-	pthread_detach(pthread_self()); /* Guarantees that thread resources are deallocated upon return */
-	clntSock = ((struct ThreadArgs *) threadArgs)->clntSock; /* Extract socket file descriptor from argument */
-	free(threadArgs); /* Deallocate memory for argument */
-	HandleTCPClient(clntSock);
-	return (NULL);
-}
-
 void startStrmSrvr() {
 	/* listen on sock_fd, new connection on clntSock */
 	int sockfd, clntSock;
@@ -62,7 +53,7 @@ void startStrmSrvr() {
 	printf("Server-listen() is OK...Listening...\n");
 
 	/* accept() loop */
-	while (1) {
+	while (TRUE) {
 		sin_size = sizeof(struct sockaddr_in);
 		if ((clntSock = accept(sockfd, (struct sockaddr *) &their_addr,
 				&sin_size)) == -1) {
@@ -77,31 +68,10 @@ void startStrmSrvr() {
 		if ((threadArgs = (struct ThreadArgs *) malloc(
 				sizeof(struct ThreadArgs))) == NULL)
 			exit(1);
-		threadArgs->clntSock = clntSock;
+		threadArgs->clntSockfd = clntSock;
 		/* Create client thread */
 		if (pthread_create(&threadID, NULL, ThreadMain, (void *) threadArgs)
 				!= 0)
 			exit(1);
 	}
-}
-
-void sendData(char tempBufS[MAXDATASIZE]) {
-	printf("Server-send(): %s\n", tempBufS);
-
-	if (send(clntSock, tempBufS, MAXDATASIZE - 1, 0) == -1)
-		perror("Server-send() error lol!");
-	else
-		printf("Server-send() is OK...\n");
-}
-
-char * receiveData() {
-	memset(&tempBufS[0], 0, MAXDATASIZE);
-	if ((numbytes = recv(clntSock, tempBufS, MAXDATASIZE - 1, 0)) == -1) {
-		perror("recv()");
-		exit(1);
-	} else
-		printf("Server-recv() is OK...\n");
-
-	tempBufS[numbytes] = '\0';
-	return tempBufS;
 }

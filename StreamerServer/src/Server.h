@@ -32,8 +32,7 @@
 // max number of bytes we can get at once
 #define MAXDATASIZE 255
 
-void HandleTCPClient(int clntSock);
-void HandleTCPClient(int clntSockAddr);
+void clientComm();
 void sendData(char tempBuff[MAXDATASIZE]);
 void startStrmSrvr();
 
@@ -46,17 +45,15 @@ void JsonToFile(json_object * jobj, char *file);
 json_object * JsonFromFile(char *file);
 
 void receive();
-void SIGLive();
-void SIGLocal();
-void SIGOff();
+void SIGAck();
+void SIGAct();
 void msgParse(char tempStr[MAXDATASIZE]);
 
-int clntSock, numbytes;
 char tempBufS[MAXDATASIZE];
 char tempBufP[MAXDATASIZE];
 
 struct ThreadArgs { /* Structure of arguments to pass to client thread */
-	int clntSock; /* socket descriptor for client */
+	int clntSockfd; /* socket descriptor for client */
 };
 
 /*

@@ -11,58 +11,19 @@ void clientComm() {
 
 	SIGStatus();
 	while (receive() != ACK) {
+		SIGStatus();
+		//sleep(1);
 	}
-}
-
-char * getStreamId() {
-	return getJsonValueFromFile("streamId");
 }
 
 void SIGStatus() {
 	memset(&tempBuff[0], 0, MAXDATASIZE);
 	snprintf(tempBuff, MAXDATASIZE,
-			"{ \"streamId\" : \"%s\",\"status\" : \"%s\"}", getStreamId(),
+			"{ \"streamId\" : \"%s\",\"status\" : \"%s\"}", getJsonValueFromFile("streamId"),
 			getJsonValueFromFile("status"));
 
 	tempBuff[MAXDATASIZE] = '\0';
 	sendData(tempBuff);
-}
-
-void SIGReady() {
-	memset(&tempBuff[0], 0, MAXDATASIZE);
-	snprintf(tempBuff, MAXDATASIZE,
-			"{ \"streamId\" : \"%s\",\"status\" : \"ready\"}", getStreamId());
-
-	tempBuff[MAXDATASIZE] = '\0';
-	sendData(tempBuff);
-	setJsonValue("status", "ready");
-}
-
-void SIGOff() {
-	memset(&tempBuff[0], 0, MAXDATASIZE);
-	snprintf(tempBuff, MAXDATASIZE,
-			"{ \"streamId\" : \"%s\",\"status\" : \"off\"}", getStreamId());
-	tempBuff[MAXDATASIZE] = '\0';
-	sendData(tempBuff);
-	setJsonValue("status", "off");
-}
-
-void SIGLive() {
-	memset(&tempBuff[0], 0, MAXDATASIZE);
-	snprintf(tempBuff, MAXDATASIZE,
-			"{ \"streamId\" : \"%s\",\"status\" : \"live\"}", getStreamId());
-	tempBuff[MAXDATASIZE] = '\0';
-	sendData(tempBuff);
-	setJsonValue("status", "live");
-}
-
-void SIGLocal() {
-	memset(&tempBuff[0], 0, MAXDATASIZE);
-	snprintf(tempBuff, MAXDATASIZE,
-			"{ \"streamId\" : \"%s\",\"status\" : \"local\"}", getStreamId());
-	tempBuff[MAXDATASIZE] = '\0';
-	sendData(tempBuff);
-	setJsonValue("status", "local");
 }
 
 void msgParse(char tempStr[MAXDATASIZE]) {
@@ -77,32 +38,31 @@ void msgParse(char tempStr[MAXDATASIZE]) {
 				startLive();
 			} else if (strcmp(getJsonValueFromFile("status"), "ready") == 0) {
 				setAll();
+				initLive();
 				startStreaming();
 			}
 			printf("Device is Live now.\n");
-			SIGLive();
+			setJsonValue("status", "live");
 		} else if (strcmp(actRecv, "local") == 0) {
 			if (strcmp(getJsonValueFromFile("status"), "live") == 0)
 				stopLive();
-			else if ((strcmp(getJsonValueFromFile("status"), "off") == 0)
-					|| (strcmp(getJsonValueFromFile("status"), "ready") == 0)) {
+			else if (strcmp(getJsonValueFromFile("status"), "ready") == 0) {
 				setAll();
-				stopLive();
 				startStreaming();
 			}
 			printf("Device is Local now.\n");
-			SIGLocal();
+			setJsonValue("status", "local");
 		} else if (strcmp(actRecv, "off") == 0) {
 			/* stop all stream */
-			printf("Device is Off now.\n");
+			printf("Device is Off/ready now.\n");
 			stopStreaming();
-			SIGOff();
+			setJsonValue("status", "ready");
 		}
 	}
 }
 
 int receive() {
-	printf("Client-Receiving ******************** \n");
+	printf("Client in Receiving mode...\n");
 
 	char *str = receiveData();
 	printf("Client-Received: %s\n", str);

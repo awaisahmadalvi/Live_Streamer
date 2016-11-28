@@ -62,12 +62,23 @@ char * receiveData() {
 	return tempBuff;
 }
 
+void intHandler(int dummy) {
+
+	g_print("*** SIGINT Caught ***\n");
+	stopStreaming();
+	setJsonValue("status", "off");
+	if (connect2Client(getJsonValueFromFile("TCPServerIp")) == 0)
+		clientComm();
+	printf("Client-Closing srvrSock\n");
+	close(srvrSock);
+	exit(0);
+}
+
 int main(int argc, char *argv[]) {
 	gst_init(&argc, &argv);
 
-	//signal(SIGINT, intHandler);
-	char *val;
-	val = getJsonValueFromFile("TCPServerIp");
+	signal(SIGINT, intHandler);
+	char *val = getJsonValueFromFile("TCPServerIp");
 	setJsonValue("status", "ready");
 	while (TRUE) {
 		if (connect2Client(val) == 0)

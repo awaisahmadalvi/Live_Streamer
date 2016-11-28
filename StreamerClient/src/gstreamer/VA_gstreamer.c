@@ -50,14 +50,6 @@ GstPad *pad;
 gboolean isH264;
 char timeStr[20];
 
-void intHandler(int dummy) {
-
-	g_print("*** SIGINT Caught ***\n");
-	stopStreaming();
-	SIGLocal();
-	exit(0);
-}
-
 void getCurTime() {
 	time_t rawtime;
 	struct tm * timeinfo;
@@ -319,6 +311,7 @@ int initLive() {
 	gst_object_unref(bus);
 	return 0;
 }
+
 int initialize() {
 
 	/* Initialisation */
@@ -352,7 +345,6 @@ int initialize() {
 	initCamera();
 	initAudio();
 	initLocal();
-	initLive();
 	return 0;
 }
 
@@ -382,6 +374,7 @@ int pause() {
 void stopLive() {
 
 	gst_element_set_state(bin, GST_STATE_NULL);
+	gst_element_set_state(qLive, GST_STATE_NULL);
 	gst_element_unlink_many(liveProgres, sinkLive, NULL);
 	pad = gst_element_get_static_pad(liveProgres, "sink");
 	gst_element_remove_pad(bin, gst_ghost_pad_new("sink", pad));
@@ -389,15 +382,19 @@ void stopLive() {
 	gst_element_unlink_many(qLive, bin, NULL);
 	gst_element_remove_pad(tee, tee_q2_pad);
 	gst_pad_unlink(tee_q2_pad, q2_pad);
-	gst_bin_remove_many(GST_BIN(pipeline), qLive, bin, NULL);
 	gst_bin_remove_many(GST_BIN(bin), liveProgres, sinkLive, NULL);
+	gst_bin_remove_many(GST_BIN(pipeline), qLive, bin, NULL);
 	gst_bin_remove(GST_BIN(pipeline), bin);
 	gst_object_unref(GST_OBJECT(bin));
 	g_print("*** Live Stopped ***\n");
 }
 
 void startLive() {
+	gst_element_set_state(pipeline, GST_STATE_PAUSED);
 	initLive();
+	//gst_element_set_state(bin, GST_STATE_PLAYING);
+	gst_element_set_state(pipeline, GST_STATE_PLAYING);
+
 }
 
 void *ThreadMain(void *threadArgs) {

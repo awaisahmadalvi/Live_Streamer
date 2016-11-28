@@ -8,18 +8,30 @@
 
 int exists(const char *fname) {
 	FILE *file;
-	if ((file = fopen(fname, "rw"))) {
+	char n[128];
+	sprintf(n, "/home/team/%s", fname);
+	if ((file = fopen(n, "rw"))) {
 		fclose(file);
 		return 1;
 	}
+
 	return 0;
 }
 
-json_object * JsonFromFile(char *file) {
+json_object * newJsonFile(char *file) {
+	json_object *tempObj = json_object_new_object();
+	/*json_object * newEntry = json_object_new_string("myStream");
+	 json_object_object_add(tempObj, "streamId", newEntry);
+	 */json_object * newEntry = json_object_new_string("done");
+	json_object_object_add(tempObj, "action", newEntry);
+	JsonToFile(tempObj, file);
+	return json_object_from_file(file);;
+}
 
+json_object * JsonFromFile(char *file) {
 	if (exists(file))
-		return json_object_from_file(file); //"/root/Streamer/status.json"
-	return json_object_new_object();
+		return json_object_from_file(file); //"/root/Streamer/$(stream_id)"
+	return newJsonFile(file);
 }
 
 void JsonToFile(json_object * jobj, char *file) {
@@ -36,10 +48,12 @@ void setJsonValue(char * jKey, char *value, char *file) {
 
 char * getJsonValueFromFile(char * jKey, char *file) {
 	json_object * tempJson = JsonFromFile(file);
-
 	json_object * jValue;
-	json_object_object_get_ex(tempJson, jKey, &jValue);
-	tempJson = NULL;
+	if (!json_object_object_get_ex(tempJson, jKey, &jValue)) {
+		json_object * newEntry = json_object_new_string("off");
+		json_object_object_add(tempJson, "action", newEntry);
+		JsonToFile(tempJson, file);
+	}
 	return json_object_get_string(jValue);
 }
 
@@ -50,4 +64,3 @@ char * getJsonValueFromObj(char * jKey, json_object * tempJson) {
 	tempJson = NULL;
 	return json_object_get_string(jValue);
 }
-
