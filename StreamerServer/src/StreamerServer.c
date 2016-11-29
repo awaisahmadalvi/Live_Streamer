@@ -10,7 +10,6 @@ void startStrmSrvr() {
 	int sin_size;
 	int yes = 1;
 
-	unsigned short echoServPort; /* Server port */
 	pthread_t threadID; /* Thread ID from pthread_create()*/
 	struct ThreadArgs *threadArgs; /* Pointer to argument structure for thread */
 

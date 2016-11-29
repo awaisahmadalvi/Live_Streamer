@@ -10,11 +10,9 @@
 #define KCYN_L "\033[1;36m"
 #define RESET "\033[0m"
 
-static int destroy_flag = 0;
-
-static void INT_HANDLER(int signo) {
-	destroy_flag = 1;
-}
+//static void INT_HANDLER(int signo) {
+//	destroy_flag = 1;
+//}
 
 /* *
  * websocket_write_back: write the string data to the destination wsi.
@@ -99,7 +97,7 @@ struct per_session_data {
 	int fd;
 };
 
-int startPlayerServer() {
+int startPlyrSrvr() {
 	// server url will usd port 5000
 	int port = PLYRPORT;
 	const char *interface = NULL;
@@ -114,10 +112,10 @@ int startPlayerServer() {
 
 	//* register the signal SIGINT handler */
 	struct sigaction act;
-	act.sa_handler = INT_HANDLER;
+	//act.sa_handler = INT_HANDLER;
 	act.sa_flags = 0;
 	sigemptyset(&act.sa_mask);
-	sigaction(SIGINT, &act, 0);
+	//sigaction(SIGINT, &act, 0);
 
 	//* setup websocket protocol */
 	protocol.name = "my-echo-protocol";
@@ -155,4 +153,3 @@ int startPlayerServer() {
 
 	return 0;
 }
-

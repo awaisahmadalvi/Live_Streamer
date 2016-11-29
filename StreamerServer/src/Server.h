@@ -32,6 +32,8 @@
 // max number of bytes we can get at once
 #define MAXDATASIZE 255
 
+static int destroy_flag = 0;
+
 void clientComm();
 void sendData(char tempBuff[MAXDATASIZE]);
 void startStrmSrvr();
@@ -60,6 +62,6 @@ struct ThreadArgs { /* Structure of arguments to pass to client thread */
  * Player Server
  */
 
-int startPlayerServer();
+int startPlyrSrvr();
 
 #endif /* SEVER_H_ */

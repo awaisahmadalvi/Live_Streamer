@@ -3,6 +3,7 @@
 char *strmID;
 int clntSock, numbytes; /* Socket descriptor for client connection */
 int ACK = FALSE;
+
 void *ThreadMain(void *threadArgs) {
 	pthread_detach(pthread_self()); /* Guarantees that thread resources are deallocated upon return */
 	clntSock = ((struct ThreadArgs *) threadArgs)->clntSockfd; /* Extract socket file descriptor from argument */
@@ -11,11 +12,25 @@ void *ThreadMain(void *threadArgs) {
 	return (NULL);
 }
 
+void SIGLive() {
+	memset(&tempBufS[0], 0, MAXDATASIZE);
+	snprintf(tempBufS, MAXDATASIZE,
+			"{ \"streamId\" : \"%s\",\"action\" : \"live\"}", strmID);
+	tempBufS[MAXDATASIZE] = '\0';
+	sendData(tempBufS);
+}
+
 void clientComm() {
 	ACK = FALSE;
-	while (!ACK) {
-		receive();
-	}
+
+	receive();
+	SIGLive();
+	receive();
+	//SIGAck();
+
+	/*while (!ACK) {
+	 receive();
+	 }*/
 	printf("Server-clntSock is closing\n");
 	close(clntSock);
 }
@@ -35,7 +50,7 @@ void SIGAck() {
 	tempBufS[MAXDATASIZE] = '\0';
 	sendData(tempBufS);
 	ACK = TRUE;
-	setJsonValue("action", "done", strmID);
+	//setJsonValue("action", "done", strmID);
 }
 
 void receive() {
@@ -45,7 +60,7 @@ void receive() {
 }
 
 void msgParse(char tempStr[MAXDATASIZE]) {
-	json_object * jobj = json_tokener_parse(tempStr);
+	/*json_object * jobj = json_tokener_parse(tempStr);
 	strmID = getJsonValueFromObj("streamId", jobj);
 	setJsonValue("streamId", strmID, strmID);
 	setJsonValue("status", getJsonValueFromObj("status", jobj), strmID);
@@ -60,6 +75,7 @@ void msgParse(char tempStr[MAXDATASIZE]) {
 		SIGAct();
 	else
 		SIGAck();
+		*/
 }
 void sendData(char tempBufS[MAXDATASIZE]) {
 	printf("Server-send(): %s\n", tempBufS);

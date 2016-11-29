@@ -71,7 +71,6 @@ static void queue_overrun(GstElement *queue, gpointer data) {
 
 	g_print("Status: %u, %u, %u, %u, %u, %u\n", mBuf, cBuf, mByt, cByt, mTim,
 			cTim);
-
 }
 
 static gboolean bus_call(GstBus *bus, GstMessage *msg, gpointer data) {
@@ -392,9 +391,7 @@ void stopLive() {
 void startLive() {
 	gst_element_set_state(pipeline, GST_STATE_PAUSED);
 	initLive();
-	//gst_element_set_state(bin, GST_STATE_PLAYING);
 	gst_element_set_state(pipeline, GST_STATE_PLAYING);
-
 }
 
 void *ThreadMain(void *threadArgs) {
