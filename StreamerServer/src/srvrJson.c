@@ -9,7 +9,7 @@
 int exists(const char *fname) {
 	FILE *file;
 	char fn[64];
-	snprintf(fn, 64, "/root/Streamer/status/%s.json", fname);
+	snprintf(fn, 64, "status/%s.json", fname);
 	if ((file = fopen(fn, "rw"))) {
 		fclose(file);
 		return 1;
@@ -19,18 +19,24 @@ int exists(const char *fname) {
 
 json_object * newJsonFile(char *file) {
 	json_object *tempObj = json_object_new_object();
-	json_object * newEntry = json_object_new_string("done");
+	json_object * newEntry = json_object_new_string(file);
+	json_object_object_add(tempObj, "streamId", newEntry);
+	JsonToFile(tempObj, file);
+	newEntry = json_object_new_string("off");
+	json_object_object_add(tempObj, "status", newEntry);
+	JsonToFile(tempObj, file);
+	newEntry = json_object_new_string("live");
 	json_object_object_add(tempObj, "action", newEntry);
 	JsonToFile(tempObj, file);
 	char fn[64];
-	snprintf(fn, 64, "/root/Streamer/status/%s.json", file);
+	snprintf(fn, 64, "status/%s.json", file);
 	return json_object_from_file(fn);
 }
 
 json_object * JsonFromFile(char *file) {
 	if (exists(file)) {
 		char fn[64];
-		snprintf(fn, 64, "/root/Streamer/status/%s.json", file);
+		snprintf(fn, 64, "status/%s.json", file);
 		return json_object_from_file(fn);
 	} //"/root/Streamer/$(stream_id)"
 	return newJsonFile(file);
@@ -38,7 +44,7 @@ json_object * JsonFromFile(char *file) {
 
 void JsonToFile(json_object * jobj, char *file) {
 	char fn[64];
-	snprintf(fn, 64, "/root/Streamer/status/%s.json", file);
+	snprintf(fn, 64, "status/%s.json", file);
 	json_object_to_file(fn, jobj);
 }
 

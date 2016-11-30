@@ -22,15 +22,9 @@ void SIGLive() {
 
 void clientComm() {
 	ACK = FALSE;
-
-	receive();
-	SIGLive();
-	receive();
-	//SIGAck();
-
-	/*while (!ACK) {
-	 receive();
-	 }*/
+	while (!ACK) {
+		receive();
+	}
 	printf("Server-clntSock is closing\n");
 	close(clntSock);
 }
@@ -50,7 +44,7 @@ void SIGAck() {
 	tempBufS[MAXDATASIZE] = '\0';
 	sendData(tempBufS);
 	ACK = TRUE;
-	//setJsonValue("action", "done", strmID);
+	setJsonValue("action", "done", strmID);
 }
 
 void receive() {
@@ -60,7 +54,7 @@ void receive() {
 }
 
 void msgParse(char tempStr[MAXDATASIZE]) {
-	/*json_object * jobj = json_tokener_parse(tempStr);
+	json_object * jobj = json_tokener_parse(tempStr);
 	strmID = getJsonValueFromObj("streamId", jobj);
 	setJsonValue("streamId", strmID, strmID);
 	setJsonValue("status", getJsonValueFromObj("status", jobj), strmID);
@@ -75,7 +69,6 @@ void msgParse(char tempStr[MAXDATASIZE]) {
 		SIGAct();
 	else
 		SIGAck();
-		*/
 }
 void sendData(char tempBufS[MAXDATASIZE]) {
 	printf("Server-send(): %s\n", tempBufS);

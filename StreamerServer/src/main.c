@@ -35,7 +35,7 @@ int main() {
 	while (flag) {
 		trig = 1;
 		signal(SIGALRM, trigger);
-		alarm(15);
+		alarm(30);
 		while (trig)
 			;
 	}

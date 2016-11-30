@@ -396,8 +396,7 @@ void startLive() {
 
 void *ThreadMain(void *threadArgs) {
 	pthread_detach(pthread_self()); /* Guarantees that thread resources are deallocated upon return */
-	/* Starting The loop, Control is hold here until error or stop */
-	play();
+	play();							/* Starting The loop, Control is hold here until error or stop */
 	stopStreaming();
 	return (NULL);
 }
