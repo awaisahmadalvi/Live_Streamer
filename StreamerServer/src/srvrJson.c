@@ -6,46 +6,36 @@
  */
 #include <Server.h>
 
-int exists(const char *fname) {
-	FILE *file;
-	char fn[64];
-	snprintf(fn, 64, "status/%s.json", fname);
-	if ((file = fopen(fn, "rw"))) {
-		fclose(file);
-		return 1;
-	}
-	return 0;
+char* jsonFileWithAddr(char *file) {
+	//char *fn;
+	char *fn = (char *) malloc(sizeof(char) * 64);
+	snprintf(fn, 64, "status/%s.json", file);
+	return fn;
 }
 
 json_object * newJsonFile(char *file) {
 	json_object *tempObj = json_object_new_object();
 	json_object * newEntry = json_object_new_string(file);
 	json_object_object_add(tempObj, "streamId", newEntry);
-	JsonToFile(tempObj, file);
 	newEntry = json_object_new_string("off");
 	json_object_object_add(tempObj, "status", newEntry);
-	JsonToFile(tempObj, file);
 	newEntry = json_object_new_string("live");
 	json_object_object_add(tempObj, "action", newEntry);
 	JsonToFile(tempObj, file);
-	char fn[64];
-	snprintf(fn, 64, "status/%s.json", file);
-	return json_object_from_file(fn);
+	return json_object_from_file(jsonFileWithAddr(file));
 }
 
 json_object * JsonFromFile(char *file) {
-	if (exists(file)) {
-		char fn[64];
-		snprintf(fn, 64, "status/%s.json", file);
-		return json_object_from_file(fn);
-	} //"/root/Streamer/$(stream_id)"
-	return newJsonFile(file);
+	json_object* temp = json_object_from_file(jsonFileWithAddr(file));
+	if (temp == NULL) {
+		printf(" JSON NOT FOUND \n\n");
+		return newJsonFile(file);
+	}
+	return temp;
 }
 
 void JsonToFile(json_object * jobj, char *file) {
-	char fn[64];
-	snprintf(fn, 64, "status/%s.json", file);
-	json_object_to_file(fn, jobj);
+	json_object_to_file(jsonFileWithAddr(file), jobj);
 }
 
 void setJsonValue(char * jKey, char *value, char *file) {

@@ -81,10 +81,11 @@ int main(int argc, char *argv[]) {
 	char *val = getJsonValueFromFile("TCPServerIp");
 	setJsonValue("status", "ready");
 	while (TRUE) {
-		if (connect2Client(val) == 0)
+		if (connect2Client(val) == 0) {
 			clientComm();
-		printf("Client-Closing srvrSock\n");
-		close(srvrSock);
+			printf("Client-Closing srvrSock\n");
+			close(srvrSock);
+		}
 		sleep(5);
 	}
 }

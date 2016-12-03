@@ -1,15 +1,6 @@
 #include <libwebsockets.h>
 #include <Server.h>
 
-#define KGRN "\033[0;32;32m"
-#define KCYN "\033[0;36m"
-#define KRED "\033[0;32;31m"
-#define KYEL "\033[1;33m"
-#define KMAG "\033[0;35m"
-#define KBLU "\033[0;32;34m"
-#define KCYN_L "\033[1;36m"
-#define RESET "\033[0m"
-
 //static void INT_HANDLER(int signo) {
 //	destroy_flag = 1;
 //}
@@ -46,8 +37,9 @@ int websocket_write_back(struct lws *wsi_in, char *str, int str_size_in) {
 		sprintf(tempBufP, "{\"streamId\":\"%s\",\"status\":\"%s\"}", strmID,
 				getJsonValueFromFile("status", strmID));
 		//tempBufP[MAXDATASIZE-1] = '\0';
-	} else if (strcmp(getJsonValueFromObj("action", jobj), "live") == 0) {
-		setJsonValue("action", "live", strmID);
+	} else {
+		//if (strcmp(getJsonValueFromObj("action", jobj), "live") == 0) {
+		setJsonValue("action", getJsonValueFromObj("action", jobj), strmID);
 		sprintf(tempBufP, "ACK");
 		//tempBufP[MAXDATASIZE-1] = '\0';
 	}

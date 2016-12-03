@@ -32,6 +32,7 @@ int stopStreaming();
 void startStreaming();
 void stopLive();
 void startLive();
+int initLive();
 
 void clientComm();
 

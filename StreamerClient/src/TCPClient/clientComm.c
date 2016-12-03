@@ -7,20 +7,20 @@
 #include <client.h>
 #define ACK 1
 
+/* "action":"live","status":"live" */
 void clientComm() {
 
 	SIGStatus();
 	while (receive() != ACK) {
 		SIGStatus();
-		//sleep(1);
 	}
 }
 
 void SIGStatus() {
 	memset(&tempBuff[0], 0, MAXDATASIZE);
 	snprintf(tempBuff, MAXDATASIZE,
-			"{ \"streamId\" : \"%s\",\"status\" : \"%s\"}", getJsonValueFromFile("streamId"),
-			getJsonValueFromFile("status"));
+			"{ \"streamId\" : \"%s\",\"status\" : \"%s\"}",
+			getJsonValueFromFile("streamId"), getJsonValueFromFile("status"));
 
 	tempBuff[MAXDATASIZE] = '\0';
 	sendData(tempBuff);
@@ -54,9 +54,9 @@ void msgParse(char tempStr[MAXDATASIZE]) {
 			setJsonValue("status", "local");
 		} else if (strcmp(actRecv, "off") == 0) {
 			/* stop all stream */
-			printf("Device is Off/ready now.\n");
+			printf("Device is Off/Ready now.\n");
 			stopStreaming();
-			setJsonValue("status", "ready");
+			setJsonValue("status", "gready");
 		}
 	}
 }
@@ -66,8 +66,9 @@ int receive() {
 
 	char *str = receiveData();
 	printf("Client-Received: %s\n", str);
-	if (strcmp(str, "ACK") == 0)
+	if (strcmp(str, "ACK") == 0) {
 		return ACK;
+	}
 	msgParse(str);
 	return 0;
 }

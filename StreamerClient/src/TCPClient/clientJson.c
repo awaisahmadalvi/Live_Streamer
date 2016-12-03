@@ -7,11 +7,11 @@
 #include <client.h>
 
 json_object * JsonFromFile() {
-	return json_object_from_file("/root/Streamer/properties.json");
+	return json_object_from_file("properties.json");
 }
 
 void JsonToFile(json_object * jobj) {
-	json_object_to_file("/root/Streamer/properties.json", jobj);
+	json_object_to_file("properties.json", jobj);
 }
 
 void setJsonValue(char * jKey, char *value) {

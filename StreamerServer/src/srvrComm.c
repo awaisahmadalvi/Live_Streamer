@@ -49,13 +49,20 @@ void SIGAck() {
 
 void receive() {
 	char *str = receiveData();
-	printf("Server-Received: %s\n", str);
+	printf("Server-Received: %s, Length: %d\n", str,strlen(str));
+	/*if (strlen(str) <= 0) {
+		ACK = TRUE;
+		return;
+	}*/
 	msgParse(str);
 }
 
 void msgParse(char tempStr[MAXDATASIZE]) {
 	json_object * jobj = json_tokener_parse(tempStr);
-	strmID = getJsonValueFromObj("streamId", jobj);
+	char *strmIDLcl = getJsonValueFromObj("streamId", jobj);
+	if (strmIDLcl != NULL) {
+		strmID = strmIDLcl;
+	}
 	setJsonValue("streamId", strmID, strmID);
 	setJsonValue("status", getJsonValueFromObj("status", jobj), strmID);
 	getJsonValueFromFile("status", strmID);
@@ -70,6 +77,7 @@ void msgParse(char tempStr[MAXDATASIZE]) {
 	else
 		SIGAck();
 }
+
 void sendData(char tempBufS[MAXDATASIZE]) {
 	printf("Server-send(): %s\n", tempBufS);
 
