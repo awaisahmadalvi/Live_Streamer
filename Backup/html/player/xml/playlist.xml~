@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<playlist>
+  <media>
+    <type>rtmp</type>
+    <video>rtmp://103.226.217.136:1935/live/mySample</video>
+    <thumb></thumb>
+    <preview></preview>
+    <title>Wowza</title>
+  </media>
+  <media>
+    <type>video</type>
+    <video>http://www.hdwplayer.com/videos/2012.mp4</video>
+    <thumb></thumb>
+    <preview></preview>
+    <title>2012 Trailor</title>
+  </media>
+  <media>
+    <type>vimeo</type>
+    <video>http://vimeo.com/24456787</video>
+    <thumb></thumb>
+    <preview></preview>
+    <title>The Arctic Light</title>
+  </media>
+  <media>
+    <type>youtube</type>
+    <video>http://www.youtube.com/watch?v=oihG3Y7Q7M8</video>
+    <thumb></thumb>
+    <preview></preview>
+    <title>Funny animal videos Youtube</title>
+  </media>
+</playlist>
