@@ -81,7 +81,7 @@
 	</div>
 
 	<script>
-	var liveTimer, plyrTimer, ws, flag=false, json;
+	var liveTimer, plyrTimer, ws, flag=false, playing=false, json;
 	function getStatus() {
 		if(ws != null)
 			ws.close();
@@ -93,7 +93,7 @@
 		ws.onmessage=function(evt){
 			document.getElementById("recv_txt").value = evt.data;
 			json = JSON.parse(evt.data);
-			if(document.getElementById("status").value !="live" && json.status=="live"){
+			if(document.getElementById("status").value !="live" && json.status=="live" && !playing){
 				hdwplayer({ 
 					id        : 'player',
 					swf       : 'player/player.swf?api=true',
@@ -105,14 +105,9 @@
 					autoStart : 'true',
 					controlBar: 'true'
 				});
-				console.log('onPlayerReady');
 				player = document.getElementById('player');
 				player.addEventListener("onStateChange",onStateChange);
 				player.addEventListener("onError",onError);
-			} else if(json.status != "live") {
-				player = document.getElementById('player');
-				player.stopVideo();
-				clearTimeout(plyrTimer);
 			}
 			document.getElementById("status").value = json.status;
 			ws.close();
@@ -212,6 +207,12 @@
 	}			
 	function onStateChange(e){
 		console.log('onStateChange : ' + e.data + '\n');
+		if(e.data == "MEDIA.PLAY"){
+			clearTimeout(plyrTimer);
+			playing=true;
+		}else if(e.data == "MEDIA.PAUSE" || e.data == "MEDIA.STOP"){
+			playing=false;
+		}
 	}
 
 	function onError(e){
@@ -230,6 +231,7 @@
 					controlBar: 'true'
 					});
 			}, 1000);
+			playing=false;
 		}
 	}
 
