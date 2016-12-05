@@ -341,7 +341,7 @@ int initialize() {
 	gst_element_link_many(flvmux, muxProgres, tee, NULL);
 
 	initCamera();
-	initAudio();
+	//initAudio();
 	initLocal();
 	return 0;
 }

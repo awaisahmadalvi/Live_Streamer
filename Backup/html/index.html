@@ -11,13 +11,12 @@
 	<link rel="stylesheet" href="css/screen.css" type="text/css" media="screen, projection">
 	<link rel="stylesheet" href="css/wowza.css" type="text/css" />
 	<script type="text/javascript" src="player/js/hdwplayer.js"></script>
-
-        <style type="text/css">
+	<style type="text/css">
             <!-- .Verdana {
                 font-family: Verdana, Geneva, sans-serif;
             }
             -->
-            </style>
+        </style>
 </head>
 <body>
     <div class="container">
@@ -42,11 +41,7 @@
 				swf       : 'player/player.swf?api=true',
 				width     : '800',
 				height    : '600',
-				type      : 'rtmp',
-				streamer  : 'rtmp://103.226.217.136:1935/live',
-				video     : 'myStream',
-				autoStart : 'false',
-				controlBar: 'true'
+				autoStart : 'false'
 				});
 			    </script>
                     </td>
@@ -86,7 +81,7 @@
 	</div>
 
 	<script>
-	var timer, ws, flag=false, json;
+	var liveTimer, plyrTimer, ws, flag=false, json;
 	function getStatus() {
 		if(ws != null)
 			ws.close();
@@ -99,8 +94,7 @@
 			document.getElementById("recv_txt").value = evt.data;
 			json = JSON.parse(evt.data);
 			if(document.getElementById("status").value !="live" && json.status=="live"){
-				//setTimeout(function(){
-				    hdwplayer({ 
+				hdwplayer({ 
 					id        : 'player',
 					swf       : 'player/player.swf?api=true',
 					width     : '800',
@@ -110,12 +104,18 @@
 					video     : json.streamId,
 					autoStart : 'true',
 					controlBar: 'true'
-					});
-				//}, 8000);
+				});
+				console.log('onPlayerReady');
+				player = document.getElementById('player');
+				player.addEventListener("onStateChange",onStateChange);
+				player.addEventListener("onError",onError);
+			} else if(json.status != "live") {
+				player = document.getElementById('player');
+				player.stopVideo();
+				clearTimeout(plyrTimer);
 			}
 			document.getElementById("status").value = json.status;
 			ws.close();
-			//checkLive();
 		};
 	  	ws.onopen=function(evt){
 	    		document.getElementById("recv_txt").value = 'Connection Successful.';
@@ -155,6 +155,9 @@
 			var rec = evt.data;
 			if(rec == "ACK"){
 				ws.close();
+				player = document.getElementById('player');
+				player.stopVideo();
+				clearTimeout(plyrTimer);
 			}
 		};
 	  	ws.onopen=function(evt){
@@ -175,6 +178,9 @@
 			var rec = evt.data;
 			if(rec == "ACK"){
 				ws.close();
+				player = document.getElementById('player');
+				player.stopVideo();
+				clearTimeout(plyrTimer);
 			}
 		};
 	  	ws.onopen=function(evt){
@@ -186,21 +192,47 @@
 
 		if(ws != null)
 			ws.close();
-		clearTimeout(timer);
+		clearTimeout(liveTimer);
 		getStatus();
-		timer = setTimeout(checkLive, 5000);
+		liveTimer = setTimeout(checkLive, 5000);
 	}
+
 	window.onclose=function(){
-		clearTimeout(timer);
+		clearTimeout(liveTimer);
+		player.stopVideo();
+		clearTimeout(plyrTimer);
 		ws.close();
 	}
 	window.onload =function(){
 		if(ws != null)
 			ws.close();
-		clearTimeout(timer);
+		clearTimeout(liveTimer);
 		getStatus();
-		timer = setTimeout(checkLive, 5000);
+		liveTimer = setTimeout(checkLive, 5000);
+	}			
+	function onStateChange(e){
+		console.log('onStateChange : ' + e.data + '\n');
 	}
+
+	function onError(e){
+		console.log('onError : ' + e.data + '\n');
+		if(e.data == "NetStream.Play.StreamNotFound"){
+			plyrTimer = setTimeout(function(){
+				    hdwplayer({ 
+					id        : 'player',
+					swf       : 'player/player.swf?api=true',
+					width     : '800',
+					height    : '600',
+					type      : 'rtmp',
+					streamer  : document.getElementById("strmName").value,
+					video     : json.streamId,
+					autoStart : 'true',
+					controlBar: 'true'
+					});
+			}, 1000);
+		}
+	}
+
 	</script>
 </body>
 </html>
