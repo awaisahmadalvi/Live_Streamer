@@ -6,8 +6,8 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>Dolphin Live Stream</title>
 
-    <script language="javascript">AC_FL_RunContent = 0;</script>
-    <!-- Framework CSS -->
+	    <script language="javascript">AC_FL_RunContent = 0;</script>
+	    <!-- Framework CSS -->
 	<link rel="stylesheet" href="css/screen.css" type="text/css" media="screen, projection">
 	<link rel="stylesheet" href="css/wowza.css" type="text/css" />
 	<script type="text/javascript" src="player/js/hdwplayer.js"></script>
@@ -60,7 +60,7 @@
 			</p>
 
 			<p>
-			<input name="connect" type="button" value="Get Status" onclick="getStatus()" />
+			<input name="connect" type="button" value="Get Status" onclick="checkLive()" />
 			<input name="golive" type="button" value="Go Live" onclick="SIGLive()" />
 			<input name="golocal" type="button" value="Go Local" onclick="SIGLocal()" />
 			<input name="gooff" type="button" value="Go Off" onclick="SIGOff()" />
@@ -84,114 +84,123 @@
         </div>
 		<!-- END FOOTER -->
 	</div>
+
 	<script>
-		var timer, ws, flag=false, json;
-		function getStatus() {
-			if(ws != null)
-				ws.close();
-		  	ws=new WebSocket("ws://103.226.217.136:4446"); //103.226.217.136 //localhost
-			ws.onerror=function(evt){
-		  		document.getElementById("recv_txt").value = 'Error: error opening Web Socket.';
-		  		ws.close();
-		  	};
-			ws.onmessage=function(evt){
-				document.getElementById("recv_txt").value = evt.data;
-				json = JSON.parse(evt.data);
-				
-				if(document.getElementById("status").value !="live" && json.status=="live"){
-					hdwplayer({ 
-						id        : 'player',
-						swf       : 'player/player.swf?api=true',
-						width     : '800',
-						height    : '600',
-						type      : 'rtmp',
-						streamer  : document.getElementById("strmName").value,
-						video     : json.streamId,
-						autoStart : 'true',
-						controlBar: 'true'
+	var timer, ws, flag=false, json;
+	function getStatus() {
+		if(ws != null)
+			ws.close();
+		ws=new WebSocket("ws://103.226.217.136:4446"); //103.226.217.136 //localhost
+		ws.onerror=function(evt){
+	  		document.getElementById("recv_txt").value = 'Error: error opening Web Socket.';
+	  		ws.close();
+	  	};
+		ws.onmessage=function(evt){
+			document.getElementById("recv_txt").value = evt.data;
+			json = JSON.parse(evt.data);
+			if(document.getElementById("status").value !="live" && json.status=="live"){
+				//setTimeout(function(){
+				    hdwplayer({ 
+					id        : 'player',
+					swf       : 'player/player.swf?api=true',
+					width     : '800',
+					height    : '600',
+					type      : 'rtmp',
+					streamer  : document.getElementById("strmName").value,
+					video     : json.streamId,
+					autoStart : 'true',
+					controlBar: 'true'
 					});
-				}
-				document.getElementById("status").value = json.status;
-				ws.close();
-				checkLive();
-			};
-		  	ws.onopen=function(evt){
-		    		document.getElementById("recv_txt").value = 'Connection Successful.';
-				ws.send("{\"streamId\":\"" +document.getElementById("videoName").value+ "\",\"action\":\"status\"}");
-		  	};
-		}
-		function SIGLive() {
-			if(ws != null)
-				ws.close();
-		  	ws=new WebSocket("ws://103.226.217.136:4446"); //103.226.217.136 //localhost
-			ws.onerror=function(evt){
-		  		document.getElementById("recv_txt").value = 'Error: error opening Web Socket.';
-		  		ws.close();
-		  	};
-			ws.onmessage=function(evt){
-				document.getElementById("recv_txt").value = evt.data;
-				var rec = evt.data;
-				if(rec == "ACK"){
-					ws.close();
-				}			
-			};
-		  	ws.onopen=function(evt){
-		    		document.getElementById("recv_txt").value = 'Connection Successful.';
-				ws.send("{\"streamId\":\""+document.getElementById("videoName").value+"\",\"action\":\"live\"}");
-			};
-		}
-		function SIGLocal() {
-			if(ws != null)
-				ws.close();
-		  	ws=new WebSocket("ws://103.226.217.136:4446"); //103.226.217.136 //localhost
-			ws.onerror=function(evt){
-		  		document.getElementById("recv_txt").value = 'Error: error opening Web Socket.';
-		  		ws.close();
-		  	};
-			ws.onmessage=function(evt){
-				document.getElementById("recv_txt").value = evt.data;
-				var rec = evt.data;
-				if(rec == "ACK"){
-					ws.close();
-				}
-			};
-		  	ws.onopen=function(evt){
-		    		document.getElementById("recv_txt").value = 'Connection Successful.';
-				ws.send("{\"streamId\":\""+document.getElementById("videoName").value+"\",\"action\":\"local\"}");
-		  	};
-		}
-		function SIGOff() {
-			if(ws != null)
-				ws.close();
-		  	ws=new WebSocket("ws://103.226.217.136:4446"); //103.226.217.136 //localhost
-			ws.onerror=function(evt){
-		  		document.getElementById("recv_txt").value = 'Error: error opening Web Socket.';
-				ws.close();
-		  	};
-			ws.onmessage=function(evt){
-				document.getElementById("recv_txt").value = evt.data;
-				var rec = evt.data;
-				if(rec == "ACK"){
-					ws.close();
-				}
-			};
-		  	ws.onopen=function(evt){
-		    		document.getElementById("recv_txt").value = 'Connection Successful.';
-				ws.send("{\"streamId\":\""+document.getElementById("videoName").value+"\",\"action\":\"off\"}");
-		  	};
-		}
-		window.onclose=function(){
-			clearTimeout(timer);
+				//}, 8000);
+			}
+			document.getElementById("status").value = json.status;
 			ws.close();
-		}
-		window.onopen=function(){
-			checklive();
-		}
-		function checkLive() {
+			//checkLive();
+		};
+	  	ws.onopen=function(evt){
+	    		document.getElementById("recv_txt").value = 'Connection Successful.';
+			ws.send("{\"streamId\":\"" +document.getElementById("videoName").value+ "\",\"action\":\"status\"}");
+	  	};
+	}
+	function SIGLive() {
+		if(ws != null)
 			ws.close();
-			clearTimeout(timer);
-			timer = setTimeout(getStatus, 3000);
-		}
+	  	ws=new WebSocket("ws://103.226.217.136:4446"); //103.226.217.136 //localhost
+		ws.onerror=function(evt){
+	  		document.getElementById("recv_txt").value = 'Error: error opening Web Socket.';
+	  		ws.close();
+	  	};
+		ws.onmessage=function(evt){
+			document.getElementById("recv_txt").value = evt.data;
+			var rec = evt.data;
+			if(rec == "ACK"){
+				ws.close();
+			}			
+		};
+	  	ws.onopen=function(evt){
+	    		document.getElementById("recv_txt").value = 'Connection Successful.';
+			ws.send("{\"streamId\":\""+document.getElementById("videoName").value+"\",\"action\":\"live\"}");
+		};
+	}
+	function SIGLocal() {
+		if(ws != null)
+			ws.close();
+	  	ws=new WebSocket("ws://103.226.217.136:4446"); //103.226.217.136 //localhost
+		ws.onerror=function(evt){
+	  		document.getElementById("recv_txt").value = 'Error: error opening Web Socket.';
+	  		ws.close();
+	  	};
+		ws.onmessage=function(evt){
+			document.getElementById("recv_txt").value = evt.data;
+			var rec = evt.data;
+			if(rec == "ACK"){
+				ws.close();
+			}
+		};
+	  	ws.onopen=function(evt){
+	    		document.getElementById("recv_txt").value = 'Connection Successful.';
+			ws.send("{\"streamId\":\""+document.getElementById("videoName").value+"\",\"action\":\"local\"}");
+	  	};
+	}
+	function SIGOff() {
+		if(ws != null)
+			ws.close();
+	  	ws=new WebSocket("ws://103.226.217.136:4446"); //103.226.217.136 //localhost
+		ws.onerror=function(evt){
+	  		document.getElementById("recv_txt").value = 'Error: error opening Web Socket.';
+			ws.close();
+	  	};
+		ws.onmessage=function(evt){
+			document.getElementById("recv_txt").value = evt.data;
+			var rec = evt.data;
+			if(rec == "ACK"){
+				ws.close();
+			}
+		};
+	  	ws.onopen=function(evt){
+	    		document.getElementById("recv_txt").value = 'Connection Successful.';
+			ws.send("{\"streamId\":\""+document.getElementById("videoName").value+"\",\"action\":\"off\"}");
+	  	};
+	}
+	function checkLive() {
+
+		if(ws != null)
+			ws.close();
+		clearTimeout(timer);
+		getStatus();
+		timer = setTimeout(checkLive, 5000);
+	}
+	window.onclose=function(){
+		clearTimeout(timer);
+		ws.close();
+	}
+	window.onload =function(){
+		if(ws != null)
+			ws.close();
+		clearTimeout(timer);
+		getStatus();
+		timer = setTimeout(checkLive, 5000);
+	}
 	</script>
 </body>
 </html>

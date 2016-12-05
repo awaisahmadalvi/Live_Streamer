@@ -1,7 +1,7 @@
 //export GST_DEBUG="alsa*:6"
 
 /*
-
+ *
  gst-launch-1.0 pulsesrc device="alsa_input.usb-HD_Camera_Manufacturer_HD_
  USB_Camera_SN0008-03-Camera.analog-mono" ! audiorate ! faac perfect-timestamp=1
  hard-resync=1 bitrate=64000 ! progressreport name=audioprogress ! queue !
@@ -10,7 +10,6 @@
  progressreport name=liveprogress ! rtmpsink location=rtmp://103.226.217.136:1935/live/myStream
  async=1 v4l2src device=/dev/video2 ! video/x-h264, framerate=5/1, width=640, height=480 !
  h264parse ! progressreport name=videoprogress ! queue ! m.
-
 
  gst-launch-1.0 pulsesrc device="alsa_input.usb-HD_Camera_Manufacturer_HD_
  USB_Camera_SN0008-03-Camera.analog-mono" ! audiorate ! progressreport
@@ -33,7 +32,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
-#include <../TCPClient/client.h>
+#include <../TCPClient/Client.h>
 
 GMainLoop *loop;
 GstElement *pipeline, *bin, *vSource, *qCam, *filter, *flvmux, *qLive, *tee,
@@ -397,7 +396,8 @@ void startLive() {
 void *ThreadMain(void *threadArgs) {
 	pthread_detach(pthread_self()); /* Guarantees that thread resources are deallocated upon return */
 	play();							/* Starting The loop, Control is hold here until error or stop */
-	stopStreaming();
+	//stopStreaming();
+	pthread_exit(NULL);
 	return (NULL);
 }
 
@@ -409,7 +409,7 @@ void startStreaming() {
 int stopStreaming() {
 
 	/* Out of the main loop, clean up nicely */
-	g_print("*** Mainloop stop: stopping Stream ***\n");
+	g_print("*** Mainloop stop: Stopping Stream ***\n");
 	g_main_loop_quit(loop);
 	int r = gst_element_set_state(pipeline, GST_STATE_NULL);
 

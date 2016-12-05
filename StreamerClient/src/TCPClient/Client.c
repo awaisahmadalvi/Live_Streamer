@@ -1,10 +1,11 @@
-#include <client.h>
+#include <Client.h>
 
 #include <stdio.h>
 #include <signal.h>
 #include <stdlib.h>
 
 int connect2Client(char *srvrIp) {
+
 	struct hostent *he;
 	// connector.s address information
 	struct sockaddr_in their_addr;
@@ -66,7 +67,7 @@ void intHandler(int dummy) {
 
 	g_print("*** SIGINT Caught ***\n");
 	stopStreaming();
-	setJsonValue("status", "off");
+	snprintf(status, MAXDATASIZE/4,"off");
 	if (connect2Client(getJsonValueFromFile("TCPServerIp")) == 0)
 		clientComm();
 	printf("Client-Closing srvrSock\n");
@@ -75,11 +76,12 @@ void intHandler(int dummy) {
 }
 
 int main(int argc, char *argv[]) {
+
 	gst_init(&argc, &argv);
 
 	signal(SIGINT, intHandler);
 	char *val = getJsonValueFromFile("TCPServerIp");
-	setJsonValue("status", "ready");
+	snprintf(status, MAXDATASIZE/4,"ready");
 	while (TRUE) {
 		if (connect2Client(val) == 0) {
 			clientComm();

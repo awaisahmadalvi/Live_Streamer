@@ -4,7 +4,7 @@
  *  Created on: Oct 17, 2016
  *      Author: root
  */
-#include <client.h>
+#include <Client.h>
 
 json_object * JsonFromFile() {
 	return json_object_from_file("properties.json");

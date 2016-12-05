@@ -26,6 +26,7 @@
 int srvrSock, numbytes;
 
 char tempBuff[MAXDATASIZE];
+char status[MAXDATASIZE/4];
 
 int setAll();
 int stopStreaming();
@@ -37,8 +38,8 @@ int initLive();
 void clientComm();
 
 int connect2Client(char *srvrIp);
-char * receiveData();
 void sendData(char buf[MAXDATASIZE]);
+char * receiveData();
 
 char * getJsonValueFromObj(char * jKey, json_object * tempJson);
 char * getJsonValueFromFile(char * jKey);
