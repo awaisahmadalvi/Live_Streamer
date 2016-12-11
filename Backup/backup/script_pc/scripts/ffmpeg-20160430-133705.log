@@ -1,0 +1,348 @@
+ffmpeg started on 2016-04-30 at 13:37:05
+Report written to "ffmpeg-20160430-133705.log"
+Command line:
+ffmpeg -f v4l2 -video_size 640x480 -framerate 10 -i /dev/video0 -f flv -threads 2 rtmp://103.226.217.136/live/myStream -report
+ffmpeg version N-79139-gde1a0d4 Copyright (c) 2000-2016 the FFmpeg developers
+  built with gcc 4.8 (Ubuntu 4.8.4-2ubuntu1~14.04.1)
+  configuration: --extra-libs=-ldl --prefix=/opt/ffmpeg --mandir=/usr/share/man --enable-avresample --disable-debug --enable-nonfree --enable-gpl --enable-version3 --enable-libopencore-amrnb --enable-libopencore-amrwb --disable-decoder=amrnb --disable-decoder=amrwb --enable-libpulse --enable-libfreetype --enable-gnutls --enable-libx264 --enable-libx265 --enable-libfdk-aac --enable-libvorbis --enable-libmp3lame --enable-libopus --enable-libvpx --enable-libspeex --enable-libass --enable-avisynth --enable-libsoxr --enable-libxvid --enable-libvidstab
+  libavutil      55. 19.100 / 55. 19.100
+  libavcodec     57. 30.100 / 57. 30.100
+  libavformat    57. 29.101 / 57. 29.101
+  libavdevice    57.  0.101 / 57.  0.101
+  libavfilter     6. 40.102 /  6. 40.102
+  libavresample   3.  0.  0 /  3.  0.  0
+  libswscale      4.  0.100 /  4.  0.100
+  libswresample   2.  0.101 /  2.  0.101
+  libpostproc    54.  0.100 / 54.  0.100
+Splitting the commandline.
+Reading option '-f' ... matched as option 'f' (force format) with argument 'v4l2'.
+Reading option '-video_size' ... matched as AVOption 'video_size' with argument '640x480'.
+Reading option '-framerate' ... matched as AVOption 'framerate' with argument '10'.
+Reading option '-i' ... matched as input file with argument '/dev/video0'.
+Reading option '-f' ... matched as option 'f' (force format) with argument 'flv'.
+Reading option '-threads' ... matched as AVOption 'threads' with argument '2'.
+Reading option 'rtmp://103.226.217.136/live/myStream' ... matched as output file.
+Reading option '-report' ... matched as option 'report' (generate a report) with argument '1'.
+Finished splitting the commandline.
+Parsing a group of options: global .
+Applying option report (generate a report) with argument 1.
+Successfully parsed a group of options.
+Parsing a group of options: input file /dev/video0.
+Applying option f (force format) with argument v4l2.
+Successfully parsed a group of options.
+Opening an input file: /dev/video0.
+[video4linux2,v4l2 @ 0x228e1c0] fd:6 capabilities:84000001
+[video4linux2,v4l2 @ 0x228e1c0] Current input_channel: 0, input_name: Camera 1, input_std: 0
+[video4linux2,v4l2 @ 0x3c071a0] The V4L2 driver changed the pixel format from 0x32315559 to 0x56595559
+[video4linux2,v4l2 @ 0x3c071a0] Trying to set codec:rawvideo pix_fmt:yuv420p
+[video4linux2,v4l2 @ 0x3c071a0] The V4L2 driver changed the pixel format from 0x32315559 to 0x56595559
+[video4linux2,v4l2 @ 0x3c071a0] Trying to set codec:rawvideo pix_fmt:yuv420p
+[video4linux2,v4l2 @ 0x3c071a0] The V4L2 driver changed the pixel format from 0x32315659 to 0x56595559
+[video4linux2,v4l2 @ 0x3c071a0] Trying to set codec:rawvideo pix_fmt:yuv422p
+[video4linux2,v4l2 @ 0x3c071a0] The V4L2 driver changed the pixel format from 0x50323234 to 0x56595559
+[video4linux2,v4l2 @ 0x3c071a0] Trying to set codec:rawvideo pix_fmt:yuyv422
+[video4linux2,v4l2 @ 0x3c071a0] Setting time per frame to 1/10
+[video4linux2,v4l2 @ 0x3c071a0] The driver changed the time per frame from 1/10 to 1/30
+[video4linux2,v4l2 @ 0x3c071a0] All info found
+Input #0, video4linux2,v4l2, from '/dev/video0':
+  Duration: N/A, start: 18684.079987, bitrate: 147456 kb/s
+    Stream #0:0, 1, 1/1000000: Video: rawvideo (YUY2 / 0x32595559), yuyv422, 640x480, 147456 kb/s, 30 fps, 30 tbr, 1000k tbn, 1000k tbc
+Successfully opened the file.
+Parsing a group of options: output file rtmp://103.226.217.136/live/myStream.
+Applying option f (force format) with argument flv.
+Successfully parsed a group of options.
+Opening an output file: rtmp://103.226.217.136/live/myStream.
+[rtmp @ 0x3c0d100] No default whitelist set
+[tcp @ 0x3c0d620] No default whitelist set
+[rtmp @ 0x3c0d100] Handshaking...
+[rtmp @ 0x3c0d100] Type answer 3
+[rtmp @ 0x3c0d100] Server version 3.0.1.1
+[rtmp @ 0x3c0d100] Proto = rtmp, path = /live/myStream, app = live, fname = myStream
+[rtmp @ 0x3c0d100] Server bandwidth = 2500000
+[rtmp @ 0x3c0d100] Client bandwidth = 2500000
+[rtmp @ 0x3c0d100] New incoming chunk size = 4096
+[rtmp @ 0x3c0d100] Releasing stream...
+[rtmp @ 0x3c0d100] FCPublish stream...
+[rtmp @ 0x3c0d100] Creating stream...
+[rtmp @ 0x3c0d100] Sending publish command for 'myStream'
+Successfully opened the file.
+[graph 0 input from stream 0:0 @ 0x3c0ede0] Setting 'video_size' to value '640x480'
+[graph 0 input from stream 0:0 @ 0x3c0ede0] Setting 'pix_fmt' to value '1'
+[graph 0 input from stream 0:0 @ 0x3c0ede0] Setting 'time_base' to value '1/1000000'
+[graph 0 input from stream 0:0 @ 0x3c0ede0] Setting 'pixel_aspect' to value '0/1'
+[graph 0 input from stream 0:0 @ 0x3c0ede0] Setting 'sws_param' to value 'flags=2'
+[graph 0 input from stream 0:0 @ 0x3c0ede0] Setting 'frame_rate' to value '30/1'
+[graph 0 input from stream 0:0 @ 0x3c0ede0] w:640 h:480 pixfmt:yuyv422 tb:1/1000000 fr:30/1 sar:0/1 sws_param:flags=2
+[format @ 0x3c17b80] compat: called with args=[yuv420p]
+[format @ 0x3c17b80] Setting 'pix_fmts' to value 'yuv420p'
+[auto-inserted scaler 0 @ 0x3c19340] Setting 'flags' to value 'bicubic'
+[auto-inserted scaler 0 @ 0x3c19340] w:iw h:ih flags:'bicubic' interl:0
+[format @ 0x3c17b80] auto-inserting filter 'auto-inserted scaler 0' between the filter 'Parsed_null_0' and the filter 'format'
+[AVFilterGraph @ 0x3c0eb20] query_formats: 4 queried, 2 merged, 1 already done, 0 delayed
+[auto-inserted scaler 0 @ 0x3c19340] w:640 h:480 fmt:yuyv422 sar:0/1 -> w:640 h:480 fmt:yuv420p sar:0/1 flags:0x4
+[flv @ 0x3c0a2e0] intra_quant_bias = 0 inter_quant_bias = -64
+Output #0, flv, to 'rtmp://103.226.217.136/live/myStream':
+  Metadata:
+    encoder         : Lavf57.29.101
+    Stream #0:0, 0, 1/1000: Video: flv1 (flv) ([2][0][0][0] / 0x0002), yuv420p, 640x480, q=2-31, 200 kb/s, 30 fps, 1k tbn, 30 tbc
+    Metadata:
+      encoder         : Lavc57.30.100 flv
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/200000 buffer size: 0 vbv_delay: -1
+Stream mapping:
+  Stream #0:0 -> #0:0 (rawvideo (native) -> flv1 (flv))
+Press [q] to stop, [?] for help
+cur_dts is invalid (this is harmless if it occurs once at the start per stream)
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+Clipping frame in rate conversion by 0.000008
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+Clipping frame in rate conversion by 0.481438
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+Clipping frame in rate conversion by 0.479027
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+Clipping frame in rate conversion by 0.478371
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=   15 fps=0.0 q=30.4 size=     234kB time=00:00:00.80 bitrate=2394.7kbits/s speed=1.59x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=   22 fps= 22 q=31.0 size=     245kB time=00:00:01.23 bitrate=1629.8kbits/s speed=1.22x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=   30 fps= 20 q=31.0 size=     261kB time=00:00:01.76 bitrate=1212.7kbits/s speed=1.17x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=   38 fps= 19 q=31.0 size=     275kB time=00:00:02.30 bitrate= 980.2kbits/s speed=1.14x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=   45 fps= 18 q=31.0 size=     279kB time=00:00:02.76 bitrate= 827.6kbits/s speed= 1.1x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=   53 fps= 18 q=31.0 size=     295kB time=00:00:03.30 bitrate= 731.4kbits/s speed=1.09x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=   60 fps= 17 q=31.0 size=     298kB time=00:00:03.76 bitrate= 648.9kbits/s speed=1.07x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=   68 fps= 17 q=31.0 size=     313kB time=00:00:04.30 bitrate= 596.4kbits/s speed=1.07x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=   76 fps= 17 q=31.0 size=     327kB time=00:00:04.83 bitrate= 554.9kbits/s speed=1.07x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=   83 fps= 16 q=31.0 size=     331kB time=00:00:05.30 bitrate= 511.3kbits/s speed=1.05x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=   91 fps= 16 q=31.0 size=     343kB time=00:00:05.83 bitrate= 482.2kbits/s speed=1.05x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=   98 fps= 16 q=31.0 size=     356kB time=00:00:06.30 bitrate= 462.5kbits/s speed=1.04x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=  106 fps= 16 q=31.0 size=     360kB time=00:00:06.80 bitrate= 433.6kbits/s speed=1.04x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=  114 fps= 16 q=31.0 size=     375kB time=00:00:07.33 bitrate= 418.7kbits/s speed=1.04x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=  121 fps= 16 q=24.8 size=     388kB time=00:00:07.80 bitrate= 407.1kbits/s speed=1.03x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=  129 fps= 16 q=31.0 size=     391kB time=00:00:08.33 bitrate= 384.3kbits/s speed=1.03x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=  136 fps= 16 q=31.0 size=     404kB time=00:00:08.80 bitrate= 375.7kbits/s speed=1.03x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=  144 fps= 16 q=31.0 size=     409kB time=00:00:09.33 bitrate= 359.2kbits/s speed=1.03x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=  152 fps= 16 q=31.0 size=     423kB time=00:00:09.86 bitrate= 351.3kbits/s speed=1.03x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=  159 fps= 16 q=31.0 size=     436kB time=00:00:10.33 bitrate= 345.6kbits/s speed=1.03x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=  167 fps= 16 q=29.7 size=     439kB time=00:00:10.86 bitrate= 330.9kbits/s speed=1.03x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=  174 fps= 16 q=31.0 size=     452kB time=00:00:11.33 bitrate= 326.7kbits/s speed=1.02x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=  182 fps= 16 q=28.3 size=     465kB time=00:00:11.86 bitrate= 321.2kbits/s speed=1.02x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=  190 fps= 16 q=27.5 size=     468kB time=00:00:12.40 bitrate= 309.5kbits/s speed=1.03x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=  197 fps= 16 q=27.1 size=     481kB time=00:00:12.83 bitrate= 307.2kbits/s speed=1.02x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=  205 fps= 16 q=23.1 size=     495kB time=00:00:13.36 bitrate= 303.2kbits/s speed=1.02x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=  212 fps= 16 q=28.4 size=     498kB time=00:00:13.83 bitrate= 294.8kbits/s speed=1.02x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=  220 fps= 16 q=26.0 size=     511kB time=00:00:14.36 bitrate= 291.7kbits/s speed=1.02x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+frame=  228 fps= 16 q=23.5 size=     515kB time=00:00:14.90 bitrate= 282.9kbits/s speed=1.02x    [rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[rawvideo @ 0x3c08ce0] PACKET SIZE: 614400, STRIDE: 1280
+[flv @ 0x3c09180] Failed to update header with correct duration.
+[flv @ 0x3c09180] Failed to update header with correct filesize.
+frame=  234 fps= 16 q=24.0 Lsize=     528kB time=00:00:15.30 bitrate= 282.6kbits/s speed=1.01x    
+video:524kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.737458%
+Input file #0 (/dev/video0):
+  Input stream #0:0 (video): 234 packets read (143769600 bytes); 234 frames decoded; 
+  Total: 234 packets (143769600 bytes) demuxed
+Output file #0 (rtmp://103.226.217.136/live/myStream):
+  Output stream #0:0 (video): 234 frames encoded; 234 packets muxed (536437 bytes); 
+  Total: 234 packets (536437 bytes) muxed
+234 frames successfully decoded, 0 decoding errors
+[AVIOContext @ 0x3c0e720] Statistics: 0 seeks, 240 writeouts
+[rtmp @ 0x3c0d100] UnPublishing stream...
+[rtmp @ 0x3c0d100] Deleting stream...
+Exiting normally, received signal 2.

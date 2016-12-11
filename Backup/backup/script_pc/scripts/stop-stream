@@ -1,0 +1,15 @@
+#!/bin/sh
+
+killall ffmpeg
+killall ffmpeg
+if [ "$IFACE" = --all ] then
+echo "Streaming stoped by $IFACE down @ $date" >> /var/log/stream
+#exit 0
+fi
+echo "out of if $IFACE" >> /var/log/stream
+
+exit 0
+
+
+
+

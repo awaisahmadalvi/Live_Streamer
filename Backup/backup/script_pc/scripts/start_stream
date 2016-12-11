@@ -1,0 +1,54 @@
+#! /bin/bash
+
+STATE=1
+bitrate=1
+frame_no=0
+frame_no_prev=0
+output=1
+upLmt=800
+loLmt=100
+sh ffstart.sh
+until [  $STATE -eq 0 ]; do                                                    
+
+        ################################## Camera Check #######################
+        if [ ! -e /dev/video0 ]; then
+                sh ffstop.sh
+                until [ -e /dev/video0 ]; do
+                        echo 'Camera not available'
+                        sleep 1
+                done
+                sh ffstart.sh
+        fi
+        ################################## Bitrate Check ######################
+        output=$(tac ffmp* | grep -m1 -o -E 'bitrate=[ ]{0,}+[0-9]{1,4}')
+        bitrate=$(echo $output | grep -o -E '[0-9]{1,4}')
+
+        if [ -e $bitrate ]; then
+                bitrate=1
+        fi
+
+        echo '********* Bitrate='$bitrate
+        if [ $upLmt -lt $bitrate ] ||  [ $loLmt -gt $bitrate ] ; then
+                echo '********* High-Low Datarate ======> ffmpeg restarting'
+                (sh ffstart.sh)&
+                echo '********* High-Low Datarate ======> ffmpeg restarted'
+        fi
+        ################################## Frame Check ########################
+        output=$(tac ffmp* | grep -m1 -o -E 'frame=[ ]{0,}+[0-9]{1,}')
+        frame_no=$(echo $output | grep -o -E '[0-9]{1,}')
+        
+	if [ -e $frame_no ]; then
+                frame_no=1
+        fi
+
+        echo '********* Frame No='$frame_no
+        if [ $frame_no_prev -eq $frame_no ] ; then
+                echo '********* Same Frame ======> ffmpeg restarting'
+                (sh ffstart.sh)&
+                echo '********* Same Frame ======> ffmpeg restarted'
+        fi
+        frame_no_prev=$frame_no
+        sleep 7
+done
+sh ffstop.sh
+exit 0
