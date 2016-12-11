@@ -1,0 +1,37 @@
+#!/usr/bin/env python2
+import os, time, shutil, commands, subprocess, shlex, signal, datetime
+from time import localtime, strftime
+from threading import Timer
+
+def startLocal():
+	global now	
+	command_line = "ffmpeg -framerate 30 -video_size hd720 -i /dev/video0 -c:v libx264 -preset ultrafast -qp 20 /root/script/%s.mkv -y -report" %now
+	args = shlex.split(command_line)
+	procLocal = subprocess.Popen(args)
+	addLog("Local started")
+	checkVideoFile()
+	restartLive()
+
+def moveLog():
+	os.chdir("/root/script/logs/")
+	files = os.listdir("/root/script/logs/")
+	for f in files:
+		if (f.startswith("ffmpeg")):
+			try:
+				shutil.move(f, "/root/script/logs/live/")
+			except EnvironmentError:
+				continue
+				
+	addLog("logs moved")
+
+def main():
+	signal.signal(signal.SIGINT, sigIntHandler)
+	moveLog()
+	while(checkCamera() == False):
+		addLog("Camera not available.")
+		time.sleep(1)
+	startLocal()	
+	print "done"
+
+main()
+#exit()

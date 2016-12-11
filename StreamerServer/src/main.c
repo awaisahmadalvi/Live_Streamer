@@ -65,6 +65,6 @@ int main() {
 		signal(SIGALRM, trigger);
 		alarm(30);
 		while (trig)
-			;
+			sleep(10);
 	}
 }

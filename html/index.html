@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Dolphin Live Stream</title>
+
+	    <script language="javascript">AC_FL_RunContent = 0;</script>
+	    <!-- Framework CSS -->
+	<link rel="stylesheet" href="css/screen.css" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="css/wowza.css" type="text/css" />
+	<script type="text/javascript" src="player/js/hdwplayer.js"></script>
+	<style type="text/css">
+            <!-- .Verdana {
+                font-family: Verdana, Geneva, sans-serif;
+            }
+            -->
+        </style>
+</head>
+<body>
+    <div class="container">
+		<!-- HEADER -->
+        <div class="span-19">
+            <h1>Dolphin Live Stream</h1><h2>A Project of PITB</h2>
+        </div>
+        <div class="span-2 last" >
+            <a href="https://www.pitb.gov.pk/"><img src="img/pitb-logo.png" class="logo" style="height:90px;width:90px;float:right" /></a>
+        </div>
+        <hr class="heading">
+		<!-- END HEADER -->
+		<!-- EXAMPLE PLAYER: WIDTH of this player should be 630px, height will vary depending on the example-->
+        <div class="span-21">
+	    <table width="100%" border="0" cellspacing="5">
+                <tr>
+                    <td>
+			    <div id="player"></div>
+			    <script type="text/javascript">
+			      hdwplayer({ 
+				id        : 'player',
+				swf       : 'player/player.swf?api=true',
+				width     : '800',
+				height    : '600',
+				autoStart : 'false'
+				});
+			    </script>
+                    </td>
+                </tr>
+                <tr>
+		    <td>
+			
+                	<p>
+			Stream Name&nbsp;<input id="strmName" maxlength="64" name="streamerName" size="32" type="text" value='rtmp://103.226.217.136:1935/live' />
+			Video Name&nbsp;<input id="videoName" maxlength="16" name="videoName" size="16" type="text" value='myStream'/>
+			</p>
+
+			<p>
+			<input name="connect" type="button" value="Get Status" onclick="checkLive()" />
+			<input name="golive" type="button" value="Go Live" onclick="SIGLive()" />
+			<input name="golocal" type="button" value="Go Local" onclick="SIGLocal()" />
+			<input name="gooff" type="button" value="Go Off" onclick="SIGOff()" />
+			</p>
+
+			<p>recv_txt: &nbsp;<input id="recv_txt" maxlength="128" name="streamerName" size="32" type="text"/>
+			<br>Status: &nbsp;<input id="status" maxlength="16" name="videoName" size="16" type="text"/></p>
+
+		    </td>
+                </tr>
+            </table>
+		<!-- FOOTER -->
+        <div class="span-24">
+            <hr class="heading">
+            <div class="span-1">
+            	<img src="img/pitb-logo	.png" width="32" height="32" />
+            </div>
+            <div class="span-23 last copyright">
+               	© 2013-2015 Punjab Information Technology Board
+            </div>
+        </div>
+		<!-- END FOOTER -->
+	</div>
+
+	<script>
+	var liveTimer, plyrTimer, ws, flag=false, playing=false, json;
+	function getStatus() {
+		if(ws != null)
+			ws.close();
+		ws=new WebSocket("ws://103.226.217.136:4446"); //103.226.217.136 //localhost
+		ws.onerror=function(evt){
+	  		document.getElementById("recv_txt").value = 'Error: error opening Web Socket.';
+	  		ws.close();
+	  	};
+		ws.onmessage=function(evt){
+			document.getElementById("recv_txt").value = evt.data;
+			json = JSON.parse(evt.data);
+			if(document.getElementById("status").value !="live" && json.status=="live" && !playing){
+				hdwplayer({ 
+					id        : 'player',
+					swf       : 'player/player.swf?api=true',
+					width     : '800',
+					height    : '600',
+					type      : 'rtmp',
+					streamer  : document.getElementById("strmName").value,
+					video     : json.streamId,
+					autoStart : 'true',
+					controlBar: 'true'
+				});
+				player = document.getElementById('player');
+				player.addEventListener("onStateChange",onStateChange);
+				player.addEventListener("onError",onError);
+			}
+			document.getElementById("status").value = json.status;
+			ws.close();
+		};
+	  	ws.onopen=function(evt){
+	    		document.getElementById("recv_txt").value = 'Connection Successful.';
+			ws.send("{\"streamId\":\"" +document.getElementById("videoName").value+ "\",\"action\":\"status\"}");
+	  	};
+	}
+	function SIGLive() {
+		if(ws != null)
+			ws.close();
+	  	ws=new WebSocket("ws://103.226.217.136:4446"); //103.226.217.136 //localhost
+		ws.onerror=function(evt){
+	  		document.getElementById("recv_txt").value = 'Error: error opening Web Socket.';
+	  		ws.close();
+	  	};
+		ws.onmessage=function(evt){
+			document.getElementById("recv_txt").value = evt.data;
+			var rec = evt.data;
+			if(rec == "ACK"){
+				ws.close();
+			}			
+		};
+	  	ws.onopen=function(evt){
+	    		document.getElementById("recv_txt").value = 'Connection Successful.';
+			ws.send("{\"streamId\":\""+document.getElementById("videoName").value+"\",\"action\":\"live\"}");
+		};
+	}
+	function SIGLocal() {
+		if(ws != null)
+			ws.close();
+	  	ws=new WebSocket("ws://103.226.217.136:4446"); //103.226.217.136 //localhost
+		ws.onerror=function(evt){
+	  		document.getElementById("recv_txt").value = 'Error: error opening Web Socket.';
+	  		ws.close();
+	  	};
+		ws.onmessage=function(evt){
+			document.getElementById("recv_txt").value = evt.data;
+			var rec = evt.data;
+			if(rec == "ACK"){
+				ws.close();
+				player = document.getElementById('player');
+				player.stopVideo();
+				clearTimeout(plyrTimer);
+			}
+		};
+	  	ws.onopen=function(evt){
+	    		document.getElementById("recv_txt").value = 'Connection Successful.';
+			ws.send("{\"streamId\":\""+document.getElementById("videoName").value+"\",\"action\":\"local\"}");
+	  	};
+	}
+	function SIGOff() {
+		if(ws != null)
+			ws.close();
+	  	ws=new WebSocket("ws://103.226.217.136:4446"); //103.226.217.136 //localhost
+		ws.onerror=function(evt){
+	  		document.getElementById("recv_txt").value = 'Error: error opening Web Socket.';
+			ws.close();
+	  	};
+		ws.onmessage=function(evt){
+			document.getElementById("recv_txt").value = evt.data;
+			var rec = evt.data;
+			if(rec == "ACK"){
+				ws.close();
+				player = document.getElementById('player');
+				player.stopVideo();
+				clearTimeout(plyrTimer);
+			}
+		};
+	  	ws.onopen=function(evt){
+	    		document.getElementById("recv_txt").value = 'Connection Successful.';
+			ws.send("{\"streamId\":\""+document.getElementById("videoName").value+"\",\"action\":\"off\"}");
+	  	};
+	}
+	function checkLive() {
+
+		if(ws != null)
+			ws.close();
+		clearTimeout(liveTimer);
+		getStatus();
+		liveTimer = setTimeout(checkLive, 5000);
+	}
+
+	window.onclose=function(){
+		clearTimeout(liveTimer);
+		player.stopVideo();
+		clearTimeout(plyrTimer);
+		ws.close();
+	}
+	window.onload =function(){
+		if(ws != null)
+			ws.close();
+		clearTimeout(liveTimer);
+		getStatus();
+		liveTimer = setTimeout(checkLive, 5000);
+	}			
+	function onStateChange(e){
+		console.log('onStateChange : ' + e.data + '\n');
+		if(e.data == "MEDIA.PLAY"){
+			clearTimeout(plyrTimer);
+			playing=true;
+		}else if(e.data == "MEDIA.PAUSE" || e.data == "MEDIA.STOP"){
+			playing=false;
+		}
+	}
+
+	function onError(e){
+		console.log('onError : ' + e.data + '\n');
+		if(e.data == "NetStream.Play.StreamNotFound"){
+			plyrTimer = setTimeout(function(){
+				    hdwplayer({ 
+					id        : 'player',
+					swf       : 'player/player.swf?api=true',
+					width     : '800',
+					height    : '600',
+					type      : 'rtmp',
+					streamer  : document.getElementById("strmName").value,
+					video     : json.streamId,
+					autoStart : 'true',
+					controlBar: 'true'
+					});
+			}, 1000);
+			playing=false;
+		}
+	}
+
+	</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+#! /bin/sh
+# Starting Stream on usb, wlan or eth
+
+if [ "$IFACE" = lo ]; then
+        exit 0
+fi
+if [ "$IFACE" = --all ]; then
+        exit 0
+fi
+if [ "$IFACE" = eth0 ]; then
+        exit 0
+fi
+# Only run from ifup.
+if [ "$MODE" != start ]; then
+        exit 0
+fi
+
+echo "Streaming Process Started @ "$(date)" via $IFACE" | tee -a /root/script/script.log >> /dev/kmsg
+/root/Streamer/./streamer.o | tee /root/log/stream.log

@@ -8,8 +8,8 @@
 
 json_object * JsonFromFile() {
 
-	if (exists("/root/OTA/status.json"))
-		return json_object_from_file("/root/OTA/status.json");
+	if (exists("status.json"))
+		return json_object_from_file("status.json");
 	return json_object_new_object();
 }
 
@@ -23,7 +23,7 @@ int exists(const char *fname) {
 }
 
 void JsonToFile(json_object * jobj) {
-	json_object_to_file("/root/OTA/status.json", jobj);
+	json_object_to_file("status.json", jobj);
 }
 
 void setJsonValue(char * jKey, char *value) {

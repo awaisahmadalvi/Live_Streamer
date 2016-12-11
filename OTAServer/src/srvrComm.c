@@ -46,7 +46,8 @@ void SIGUpdated() {
 void SIGAvailable() {
 	memset(&tempBuff[0], 0, MAXDATASIZE);
 	snprintf(tempBuff, MAXDATASIZE,
-			"{ \"status\" : \"available\",\"addr\" : \"http://103.226.217.136/UpdatePackage.tar.xz\" }\n");
+			"{ \"status\" : \"available\",\"addr\" : \"http://103.226.217.136/UpdatePackage.tar.xz\""
+			",\"package\" : \"UpdatePackage.tar.xz\",\"version\" : %s }\n",getJsonValueFromFile("version"));
 	tempBuff[MAXDATASIZE] = '\0';
 	sendData(tempBuff);
 }

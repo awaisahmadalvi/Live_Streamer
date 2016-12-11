@@ -1,0 +1,7 @@
+#! /bin/bash
+rm *.avi
+rm logs/*.log
+rm logs/live/*.log
+rm script.log
+killall python ffmpeg gst-launch-1.0 
+exit 0

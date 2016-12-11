@@ -45,7 +45,7 @@ void sendData(char tempBuff[MAXDATASIZE]) {
 	printf("Client-send(): %s\n", tempBuff);
 	if (send(srvrSock, tempBuff, MAXDATASIZE - 1, 0) == -1) {
 		perror("send()");
-		exit(1);
+		return NULL;
 	} else
 		printf("Client-send() is OK...\n");
 	memset(&tempBuff[0], 0, MAXDATASIZE);
@@ -56,7 +56,8 @@ char * receiveData() {
 	memset(&tempBuff[0], 0, MAXDATASIZE);
 	if ((numbytes = recv(srvrSock, tempBuff, MAXDATASIZE - 1, 0)) == -1) {
 		perror("recv()");
-		exit(1);
+		return NULL;
+		//exit(1);
 	} else
 		printf("Client-recv() is OK...\n");
 	tempBuff[numbytes] = '\0';
@@ -88,6 +89,8 @@ int main(int argc, char *argv[]) {
 			printf("Client-Closing srvrSock\n");
 			close(srvrSock);
 		}
+		else
+			close(srvrSock);
 		sleep(5);
 	}
 }

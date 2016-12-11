@@ -1,0 +1,13 @@
+#! /bin/bash
+if [$IFACE -eq 'wlan0' ]; then
+	while ps axg | grep -v grep | grep sh > /dev/null; do 
+		killall sh
+		sleep 1
+	done
+	if [ -e /root/script/ffmp*.log ]; then 
+		mv /root/script/ffmp*.log /root/script/logs/
+		echo logs moved | tee -a /root/script/script.log >> /dev/kmsg
+	fi
+	echo Ffmpeg stoped on no internet module | tee -a /root/script/script.log >> /dev/kmsg
+fi
+exit 0

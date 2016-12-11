@@ -1,0 +1,7 @@
+#! /bin/bash
+
+until [ -e /dev/video1 ]; do		
+	echo 'Camera not available'
+	sleep 1
+done
+

@@ -7,11 +7,11 @@
 #include <client.h>
 
 json_object * JsonFromFile() {
-	return json_object_from_file("/root/OTA/status.json");
+	return json_object_from_file("status.json");
 }
 
 void JsonToFile(json_object * jobj) {
-	json_object_to_file("/root/OTA/status.json", jobj);
+	json_object_to_file("status.json", jobj);
 }
 
 void setJsonValue(char * jKey, char *value) {
