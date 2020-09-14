@@ -1,7 +1,7 @@
 //export GST_DEBUG="alsa*:6"
 
 /*
- *
+
  gst-launch-1.0 pulsesrc device="alsa_input.usb-HD_Camera_Manufacturer_HD_
  USB_Camera_SN0008-03-Camera.analog-mono" ! audiorate ! faac perfect-timestamp=1
  hard-resync=1 bitrate=64000 ! progressreport name=audioprogress ! queue !
@@ -143,6 +143,8 @@ int initCamera() {
 	if (!vSource || !qCam || !parse) {
 		g_printerr(
 				"*** One element from initialize Camera could not be created. Exiting ***\n");
+		g_printerr("*** %d, %d, %d ***\n", vSource, qCam, parse);
+
 		return -1;
 	}
 	/* we set the input Camera device to the vSource element */
@@ -340,9 +342,12 @@ int initialize() {
 	gst_bin_add_many(GST_BIN(pipeline), flvmux, muxProgres, tee, NULL);
 	gst_element_link_many(flvmux, muxProgres, tee, NULL);
 
-	initCamera();
-	//initAudio();
-	initLocal();
+	if (initCamera() != 0)
+		return -1;
+	//if (initAudio() != 0)
+		//return -1;
+	if (initLocal() != 0)
+		return -1;
 	return 0;
 }
 
@@ -395,14 +400,12 @@ void startLive() {
 
 void *ThreadMain(void *threadArgs) {
 	pthread_detach(pthread_self()); /* Guarantees that thread resources are deallocated upon return */
-	play();							/* Starting The loop, Control is hold here until error or stop */
-	//stopStreaming();
+	play(); /* Starting The loop, Control is hold here until error or stop */
 	pthread_exit(NULL);
 	return (NULL);
 }
 
 void startStreaming() {
-
 	g_thread_new("GST_Thread", ThreadMain, NULL);
 }
 
@@ -413,6 +416,7 @@ int stopStreaming() {
 	g_main_loop_quit(loop);
 	int r = gst_element_set_state(pipeline, GST_STATE_NULL);
 
+	g_print("*** return SetState %d ***\n", r);
 	g_print("*** Deleting pipeline ***\n");
 	gst_object_unref(GST_OBJECT(pipeline));
 	g_source_remove(bus_watch_id);
@@ -421,7 +425,9 @@ int stopStreaming() {
 }
 
 int setAll() {
-	if (initialize() < 0) {
+	stopStreaming();
+	stopLive();
+	if (initialize() != 0) {
 		printf("Error in initializing GST.\n");
 		return -1;
 	}

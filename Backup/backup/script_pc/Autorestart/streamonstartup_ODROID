@@ -1,0 +1,45 @@
+#! /bin/sh
+# Starting Stream on usb, wlan or eth
+
+if [ "$IFACE" = lo ]; then
+        exit 0
+fi
+if [ "$IFACE" = --all ]; then
+        exit 0
+fi
+if [ "$IFACE" = eth0 ]; then
+        exit 0
+fi
+# Only run from ifup.
+if [ "$MODE" != start ]; then
+        exit 0
+fi
+
+echo "Start-up script started @ "$(date)" via $IFACE" >> /dev/kmsg
+exitcodeOTA=-1
+(until [ $exitcodeOTA -eq 0 ]; do
+
+	OTA_log="/root/OTAUpdate/log-`date +'%Y-%m-%d_%H-%M-%S'`"
+	[ -f "$OTA_log" ] || touch "$OTA_log"
+	cd /root/OTAUpdate/
+	echo "OTAUpdate Process Started @ "$(date) | tee "$OTA_log" >> /dev/kmsg
+	stdbuf -o 0 /root/OTAUpdate/./OTAClient.o | tee "$OTA_log" >> /dev/kmsg
+	exitcodeOTA=${PIPESTATUS[0]}
+	sleep 1
+	echo "OTAUpdater crashed, restarting now @ " $(date) >> /dev/kmsg
+
+done)&
+exitcodeStrm=-1
+(until [ $exitcodeStrm -eq 0 ]; do
+
+	Streamer_log="/root/StreamerClient/logs/log-`date +'%Y-%m-%d_%H-%M-%S'`"
+	[ -f "$Streamer_log" ] || touch "$Streamer_log"
+	cd /root/StreamerClient/
+	echo "Streaming Process Started @ "$(date) | tee "$Streamer_log" >> /dev/kmsg
+	stdbuf -o 0 /root/StreamerClient/./StreamerClient.o | tee "$Strm_log" >> /dev/kmsg
+	exitcodeStrm=${PIPESTATUS[0]}
+	sleep 1
+	echo "Streaming Process Crashed, restarting now @ " $(date) >> /dev/kmsg
+
+done)&
+

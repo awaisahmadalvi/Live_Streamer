@@ -5,6 +5,7 @@
  *      Author: root
  */
 #include <Client.h>
+
 #define ACK 1
 
 /* "status":"live" */
@@ -13,6 +14,7 @@ void clientComm() {
 	SIGStatus();
 	while (receive() != ACK) {
 		SIGStatus();
+		sleep(1);
 	}
 }
 
@@ -36,26 +38,31 @@ void msgParse(char tempStr[MAXDATASIZE]) {
 			if (strcmp(status, "local") == 0) {
 				startLive();
 			} else if (strcmp(status, "ready") == 0) {
-				setAll();
+				if (setAll() != 0)
+					return;
 				initLive();
 				startStreaming();
 			}
 			printf("Device is Live now.\n");
-			snprintf(status, MAXDATASIZE/4,"live");
+			snprintf(status, MAXDATASIZE / 4, "live");
 		} else if (strcmp(actRecv, "local") == 0) {
 			if (strcmp(status, "live") == 0)
 				stopLive();
 			else if (strcmp(status, "ready") == 0) {
-				setAll();
+				if (setAll() != 0)
+					return;
 				startStreaming();
 			}
 			printf("Device is Local now.\n");
-			snprintf(status, MAXDATASIZE/4,"local");
+			snprintf(status, MAXDATASIZE / 4, "local");
 		} else if (strcmp(actRecv, "off") == 0) {
 			/* stop all stream */
+			while (stopStreaming() != 1) {
+				usleep(500);
+				printf("stopstreaming failed.\n");
+			}
 			printf("Device is Off/Ready now.\n");
-			stopStreaming();
-			snprintf(status, MAXDATASIZE/4,"ready");
+			snprintf(status, MAXDATASIZE / 4, "ready");
 		}
 	}
 }

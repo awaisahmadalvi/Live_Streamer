@@ -45,7 +45,7 @@ void sendData(char tempBuff[MAXDATASIZE]) {
 	printf("Client-send(): %s\n", tempBuff);
 	if (send(srvrSock, tempBuff, MAXDATASIZE - 1, 0) == -1) {
 		perror("send()");
-		return NULL;
+		return;
 	} else
 		printf("Client-send() is OK...\n");
 	memset(&tempBuff[0], 0, MAXDATASIZE);
